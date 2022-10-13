@@ -25,5 +25,4 @@ func main() {
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/stats", getStats).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", router))
-
 }
