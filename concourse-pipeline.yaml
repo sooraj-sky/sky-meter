@@ -16,7 +16,7 @@ resources:
     username: ((docker-hub-username))
     password: ((docker-hub-password))
     repository: ((docker-hub-username))/sky-meter
-    tag : latest
+    
 
 jobs:
 - name: build-and-push
