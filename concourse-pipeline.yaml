@@ -41,4 +41,4 @@ jobs:
         path: build
   - put: sky-meter-docker-image
     params:
-      image: image/image.ta
+      image: image/image.tar
