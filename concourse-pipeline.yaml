@@ -4,7 +4,7 @@ resources:
   type: git
   source:
     uri: https://github.com/sooraj-sky/sky-meter.git
-    branch: ((branch))
+    branch: release
     git_config:
     - name: safe.directory
       value: /tmp/build/get
