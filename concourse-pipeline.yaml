@@ -1,6 +1,6 @@
 resources:
 - name: sky-meter-git
-  icon: git
+  icon: github
   type: git
   source:
     uri: https://github.com/sooraj-sky/sky-meter.git
@@ -10,10 +10,9 @@ resources:
       value: /tmp/build/get
 
 - name: sky-meter-docker-image
-  type: docker-image
+  type: registry-image
   icon: docker
   source:
-    email: ((docker-hub-email))
     username: ((docker-hub-username))
     password: ((docker-hub-password))
     repository: ((docker-hub-username))/sky-meter
@@ -22,6 +21,7 @@ jobs:
 - name: build-and-push
   plan:
   - get: sky-meter-git
+    trigger: true
   - task: build-task-image
     privileged: true
     config:
@@ -35,9 +35,11 @@ jobs:
       outputs:
       - name: image
       params:
-        CONTEXT: sky-meter-git/Dockerfile
+        CONTEXT: sky-meter-git
       run:
         path: build
   - put: sky-meter-docker-image
     params:
       image: image/image.tar
+      tag : latest  
+      
