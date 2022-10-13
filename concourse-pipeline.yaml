@@ -16,7 +16,6 @@ resources:
     username: ((docker-hub-username))
     password: ((docker-hub-password))
     repository: ((docker-hub-username))/sky-meter
-    tag: main-latest
 
 jobs:
 - name: build-and-push
@@ -24,7 +23,6 @@ jobs:
   - get: sky-meter-git
     trigger: true
   - task: build-task-image
-    tag: main-latest
     privileged: true
     config:
       platform: linux
