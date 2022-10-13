@@ -17,7 +17,6 @@ func getStats(w http.ResponseWriter, r *http.Request) {
 	httpresdata, _ := httpreponser.GetHttpdata("https://apple.com")
 	w.Write(httpresdata)
 	return
-
 }
 
 func main() {
