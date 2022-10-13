@@ -4,7 +4,7 @@ resources:
   type: git
   source:
     uri: https://github.com/sooraj-sky/sky-meter.git
-    branch: release
+    branch: ((branch))
     git_config:
     - name: safe.directory
       value: /tmp/build/get
@@ -20,8 +20,10 @@ resources:
 jobs:
 - name: build-and-push
   plan:
-  - get: sky-meter-git
-    trigger: true
+  - in_parallel:
+    - get: sky-meter-git
+      passed: [test]
+      trigger: true
   - task: build-task-image
     privileged: true
     config:
