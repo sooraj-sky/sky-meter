@@ -42,4 +42,5 @@ jobs:
   - put: sky-meter-docker-image
     params:
       image: image/image.tar
+      tag_file: sky-meter-git/.git/refs/heads/release
 
