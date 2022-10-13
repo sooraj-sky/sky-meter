@@ -42,4 +42,4 @@ jobs:
   - put: sky-meter-docker-image
     params:
       image: image/image.tar
-      
+

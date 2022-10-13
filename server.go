@@ -17,7 +17,6 @@ func getStats(w http.ResponseWriter, r *http.Request) {
 	httpresdata, _ := httpreponser.GetHttpdata("https://apple.com")
 	w.Write(httpresdata)
 	return
-
 }
 
 func main() {
@@ -26,5 +25,4 @@ func main() {
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/stats", getStats).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", router))
-
 }
