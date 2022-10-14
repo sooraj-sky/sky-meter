@@ -4,9 +4,6 @@ on:
   push:
     branches: [ release ]
 
-
-name: List All Environment Variables workflow test
-
 on: [push]
 
 jobs:
