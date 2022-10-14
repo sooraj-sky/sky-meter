@@ -38,7 +38,7 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: soorajsky/sky-meter:relaese-${{ steps.meta.outputs.tags }}
+          tags: soorajsky/sky-meter:relaese- ${{ steps.prepare.outputs.tag }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       -
