@@ -4,8 +4,6 @@ on:
   push:
     branches: [ release ]
 
-on: [push]
-
 jobs:
   getEnvs:
     runs-on: ubuntu-latest
