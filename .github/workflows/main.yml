@@ -29,5 +29,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ GITHUB_RUN_ID }}
+          tags: relaese-${{ github.sha }}
           labels: ${{ steps.meta.outputs.labels }}
