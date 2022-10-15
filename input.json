@@ -1,0 +1,14 @@
+{
+  "endpoints": [
+    {
+      "url": "https://apple.com",
+      "timeout": 30,
+      "skip_ssl": false
+    },
+    {
+      "url": "https://github.com",
+      "timeout": 30,
+      "skip_ssl": false
+    }
+  ]
+}
