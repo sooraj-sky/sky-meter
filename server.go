@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	httpreponser "sky-meter/httpres"
+	dbops "sky-meter/dbops"
 )
 
 func homeLink(w http.ResponseWriter, r *http.Request) {
@@ -20,6 +21,7 @@ func getStats(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	dbops.InsertSearchUrl("https://apple.com")
 	fmt.Println("listening on port 8080")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)

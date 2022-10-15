@@ -1,4 +1,4 @@
-package main
+package dbops
 
 import (
 	"database/sql"
@@ -21,7 +21,7 @@ type errorString struct {
     s string
 }
 
-func main() {
+func InsertSearchUrl(url string) {
 	// connection string
 	psqlconn = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
@@ -50,7 +50,7 @@ func main() {
 	CheckTable(db, Tableqry, enpoint_table)
 
 	insertData := `insert into "endpoint"("end_point_name", "added", "modified") values($1, $2, $3)`
-	_, e := db.Exec(insertData, "http://skywalks.in", updatedTime, updatedTime)
+	_, e := db.Exec(insertData, url, updatedTime, updatedTime)
 	CheckError(e, "error adding endoint")
 
 
