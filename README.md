@@ -12,7 +12,7 @@ See Docker Hub Image
 https://hub.docker.com/r/soorajsky/sky-meter
 
 
-default port : 8000
+default port : 8080
 
 ## CI
 
