@@ -12,13 +12,15 @@ import (
 	httpreponser "sky-meter/httpres"
 )
 
-type AllEndpoints struct {
-	Endpoints []struct {
-		URL     string `json:"url"`
-		Timeout int    `json:"timeout"`
-		SkipSsl bool   `json:"skip_ssl"`
-	} `json:"endpoints"`
+type AllEndpoints []struct {
+
+		URL     string `json:"url",omitempty`
+		Timeout int    `json:"timeout",omitempty`
+		SkipSsl bool   `json:"skip_ssl",omitempty`
+		Frequency int    `json:"frequency",omitempty`
+		Group     string `json:"group",omitempty`
 }
+
 
 func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to sky-meter")
@@ -30,6 +32,12 @@ func getStats(w http.ResponseWriter, r *http.Request) {
 	w.Write(httpresdata)
 	return
 }
+
+func httpSyntheticCheck(endpoint string) {
+	httpresdata, _ := httpreponser.GetHttpdata(endpoint)
+	fmt.Println(string(httpresdata))
+}
+
 
 func main() {
 
@@ -43,12 +51,15 @@ func main() {
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
+
 	var endpoints AllEndpoints
 
 	json.Unmarshal(byteValue, &endpoints)
 
-	for i := 0; i < len(endpoints.Endpoints); i++ {
-		dbops.InsertSearchUrl(endpoints.Endpoints[i].URL,endpoints.Endpoints[i].Timeout,endpoints.Endpoints[i].SkipSsl)
+
+	 for i := 0; i < len(endpoints); i++ {
+		dbops.InsertSearchUrl(endpoints[i].URL,endpoints[i].Timeout,endpoints[i].SkipSsl,endpoints[i].Frequency, endpoints[i].Group)
+		httpSyntheticCheck(endpoints[i].URL)
 	}
 
 	fmt.Println("listening on port 8080")
