@@ -11,7 +11,7 @@ const (
 	host     = "localhost"
 	port     = 5433
 	user     = "postgres"
-	password = "postgress"
+	password = "postgres"
 	dbname   = "postgres"
 )
 
@@ -21,7 +21,7 @@ type errorString struct {
 	s string
 }
 
-func InsertSearchUrl(url string, timeout int, skipSsl bool) {
+func InsertSearchUrl(url string, timeout int, skipSsl bool, checkFreq uint64, group string) {
 	// connection string
 	psqlconn = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
@@ -34,9 +34,9 @@ func InsertSearchUrl(url string, timeout int, skipSsl bool) {
 
 	// check db
 	pingerr := db.Ping()
-	if pingerr != nil {
-		fmt.Println(err)
-	}
+	//if pingerr != nil {
+	fmt.Println(pingerr)
+	//}
 
 	// close database
 	defer db.Close()
@@ -45,13 +45,12 @@ func InsertSearchUrl(url string, timeout int, skipSsl bool) {
 
 	endpoint_table := "endpoint"
 
-	Tableqry := "`"+"CREATE TABLE IF NOT EXISTS "+endpoint_table+"(id  SERIAL PRIMARY KEY,end_point_name TEXT UNIQUE,timeout INT,skipSsl BOOLEAN, added timestamp default NULL,modified timestamp default NULL);"+"`"
-	fmt.Println(Tableqry)
+	Tableqry := "CREATE TABLE IF NOT EXISTS " + endpoint_table + " (id  SERIAL PRIMARY KEY,end_point_name TEXT UNIQUE,timeout INT, frequency INT, skipssl BOOLEAN, groups TEXT, added timestamp default NULL,modified timestamp default NULL);"
 
 	CheckTable(db, Tableqry, endpoint_table)
 
-	insertData := `insert into "endpoint"("end_point_name", "timeout", "skipssl", "added", "modified") values($1, $2, $3, $4, $5)`
-	_, e := db.Exec(insertData, url, timeout,skipSsl, updatedTime, updatedTime)
+	insertData := `insert into "endpoint"("end_point_name", "timeout","frequency", "skipssl","groups", "added", "modified") values($1, $2, $3, $4, $5, $6, $7)`
+	_, e := db.Exec(insertData, url, timeout, checkFreq, skipSsl, group, updatedTime, updatedTime)
 	CheckError(e, "error adding endoint")
 
 }
@@ -78,6 +77,7 @@ func (e *errorString) Errorstrng() string {
 }
 
 func CheckTable(db *sql.DB, Tableqry, Tableqryname string) {
+
 	var n int64
 	errs := db.QueryRow("select 1 from information_schema.tables where table_name=$1", Tableqryname).Scan(&n)
 	if errs == nil {

@@ -32,3 +32,6 @@ docker-hub-username: <your-hub-user>
 docker-hub-password: <your-hub-pass>
 
 fly -t tutorial set-pipeline -p skymeter-build -c concourse-pipeline.yaml -l credentials.yml
+
+
+add timezone

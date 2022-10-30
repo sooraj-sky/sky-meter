@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/jasonlvhit/gocron"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,14 +14,12 @@ import (
 )
 
 type AllEndpoints []struct {
-
-		URL     string `json:"url",omitempty`
-		Timeout int    `json:"timeout",omitempty`
-		SkipSsl bool   `json:"skip_ssl",omitempty`
-		Frequency int    `json:"frequency",omitempty`
-		Group     string `json:"group",omitempty`
+	URL       string `json:"url",omitempty`
+	Timeout   int    `json:"timeout",omitempty`
+	SkipSsl   bool   `json:"skip_ssl",omitempty`
+	Frequency uint64 `json:"frequency",omitempty`
+	Group     string `json:"group",omitempty`
 }
-
 
 func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to sky-meter")
@@ -28,16 +27,21 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 
 func getStats(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	httpresdata, _ := httpreponser.GetHttpdata("https://apple.com")
+	httpresdata, _ := httpreponser.GetHttpdata("https://bing.com")
 	w.Write(httpresdata)
 	return
 }
 
-func httpSyntheticCheck(endpoint string) {
+func httpSyntheticCheck(endpoint string, time uint64) {
+	gocron.Every(time).Second().Do(callEndpoint, endpoint)
+	<-gocron.Start()
+	fmt.Println(time)
+}
+
+func callEndpoint(endpoint string) {
 	httpresdata, _ := httpreponser.GetHttpdata(endpoint)
 	fmt.Println(string(httpresdata))
 }
-
 
 func main() {
 
@@ -51,15 +55,13 @@ func main() {
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-
 	var endpoints AllEndpoints
 
 	json.Unmarshal(byteValue, &endpoints)
 
-
-	 for i := 0; i < len(endpoints); i++ {
-		dbops.InsertSearchUrl(endpoints[i].URL,endpoints[i].Timeout,endpoints[i].SkipSsl,endpoints[i].Frequency, endpoints[i].Group)
-		httpSyntheticCheck(endpoints[i].URL)
+	for i := 0; i < len(endpoints); i++ {
+		dbops.InsertSearchUrl(endpoints[i].URL, endpoints[i].Timeout, endpoints[i].SkipSsl, endpoints[i].Frequency, endpoints[i].Group)
+		httpSyntheticCheck(endpoints[i].URL, endpoints[i].Frequency)
 	}
 
 	fmt.Println("listening on port 8080")
@@ -67,4 +69,5 @@ func main() {
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/stats", getStats).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", router))
+
 }
