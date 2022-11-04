@@ -2,17 +2,18 @@
 
 sky-meter is an synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts.
 
+
 ### Tested Environment
 GO version: 1.18
 
 Tested OS: Ubuntu 22.10, alpine(docker)
 
-We are highly recommending to run th app as docker contianer. 
+We are highly recommending to run th app as docker container. 
 See Docker Hub Image 
 https://hub.docker.com/r/soorajsky/sky-meter
 
 
-default port : 8000
+default port : 8080
 
 ## CI
 
