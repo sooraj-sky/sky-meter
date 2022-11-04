@@ -4,22 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/jasonlvhit/gocron"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	dbops "sky-meter/dbops"
 	httpreponser "sky-meter/httpres"
+	"github.com/jasonlvhit/gocron"
+	"github.com/getsentry/sentry-go"
+	  "gorm.io/driver/postgres"
+  "gorm.io/gorm"
+  models "sky-meter/models"
 )
 
-type AllEndpoints []struct {
-	URL       string `json:"url",omitempty`
-	Timeout   int    `json:"timeout",omitempty`
-	SkipSsl   bool   `json:"skip_ssl",omitempty`
-	Frequency uint64 `json:"frequency",omitempty`
-	Group     string `json:"group",omitempty`
-}
+
 
 func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to sky-meter")
@@ -32,10 +30,12 @@ func getStats(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+
+
 func httpSyntheticCheck(endpoint string, time uint64) {
-	gocron.Every(time).Second().Do(callEndpoint, endpoint)
-	<-gocron.Start()
-	fmt.Println(time)
+  gocron.Every(time).Second().Do(callEndpoint, endpoint)
+  <-gocron.Start()
+  fmt.Println(time)
 }
 
 func callEndpoint(endpoint string) {
@@ -44,30 +44,48 @@ func callEndpoint(endpoint string) {
 }
 
 func main() {
+	senterr := sentry.Init(sentry.ClientOptions{
+		Dsn: "addYourDSNHere",
+		// Set TracesSampleRate to 1.0 to capture 100%
+		// of transactions for performance monitoring.
+		// We recommend adjusting this value in production,
+		TracesSampleRate: 1.0,
+	})
+	if senterr != nil {
+		log.Fatalf("sentry.Init: %s", senterr)
+	}
+
 
 	jsonFile, err := os.Open("input.json")
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	fmt.Println("Successfully Opened input.json")
 	defer jsonFile.Close()
 
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	var endpoints AllEndpoints
+	var endpoints models.JsonInput
 
-	json.Unmarshal(byteValue, &endpoints)
+	json.Unmarshal(byteValue, &endpoints)	
 
-	for i := 0; i < len(endpoints); i++ {
-		dbops.InsertSearchUrl(endpoints[i].URL, endpoints[i].Timeout, endpoints[i].SkipSsl, endpoints[i].Frequency, endpoints[i].Group)
-		httpSyntheticCheck(endpoints[i].URL, endpoints[i].Frequency)
-	}
+db, err := gorm.Open(postgres.New(postgres.Config{
+    DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable TimeZone=Asia/Shanghai",
+    PreferSimpleProtocol: true, // disables implicit prepared statement usage
+  }), &gorm.Config{})
+
+  if err != nil {
+    log.Println(err)
+  }
+
+  dbops.InitialMigration(db)
+  dbops.InsertUrlsToDb(db,endpoints)
 
 	fmt.Println("listening on port 8080")
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/stats", getStats).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8080", router))
+
+
 
 }
