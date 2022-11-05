@@ -1,13 +1,13 @@
 package jsonops
 
 import (
-	"os"
-	models "sky-meter/models"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"encoding/json"
-
+	"os"
+	models "sky-meter/models"
 )
+
 func InputJson() models.JsonInput {
 
 	jsonFile, err := os.Open("input.json")

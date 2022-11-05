@@ -102,3 +102,9 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 
 	return t, d
 }
+
+func CallEndpoint(endpoint interface{}) {
+	url, _ := endpoint.(string)
+	httpresdata, _ := GetHttpdata(url)
+	log.Println(string(httpresdata))
+}
