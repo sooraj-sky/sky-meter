@@ -21,6 +21,7 @@ type AllEndpoints struct {
 	SkipSsl   bool
 	Frequency uint64
 	Group     string
+	NextRun   int
 }
 
 type Debug struct {

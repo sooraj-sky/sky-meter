@@ -2,6 +2,7 @@ package dbops
 
 import (
 	"gorm.io/gorm"
+	"log"
 	models "sky-meter/models"
 )
 
@@ -22,8 +23,18 @@ func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
 
 }
 
-func GetUrlFrequency(db *gorm.DB) []models.AllEndpoints {
+func GetUrlFrequency(db *gorm.DB) interface{} {
 	var urlsToCheck []models.AllEndpoints
 	db.Find(&urlsToCheck)
-	return urlsToCheck
+	for i := 0; i < len(urlsToCheck); i++ {
+		log.Println(urlsToCheck[i])
+		if urlsToCheck[i].NextRun == 0 {
+			db.Model(&urlsToCheck).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
+			return urlsToCheck[i]
+		} else {
+			db.Model(&urlsToCheck).Where("id = ?", urlsToCheck[i].ID).Update("next_run", (urlsToCheck[i].NextRun)-1)
+		}
+
+	}
+	return nil
 }
