@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	models "sky-meter/models"
+	httpreponser "sky-meter/packages/httpres"
 )
 
 func InitialMigration(db *gorm.DB) {
@@ -23,18 +24,17 @@ func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
 
 }
 
-func GetUrlFrequency(db *gorm.DB) interface{} {
+func GetUrlFrequency(db *gorm.DB) {
 	var urlsToCheck []models.AllEndpoints
 	db.Find(&urlsToCheck)
 	for i := 0; i < len(urlsToCheck); i++ {
-		log.Println(urlsToCheck[i])
+		log.Println(urlsToCheck[i], "here", urlsToCheck[i].NextRun, urlsToCheck[i].ID, "freq", urlsToCheck[i].Frequency)
 		if urlsToCheck[i].NextRun == 0 {
-			db.Model(&urlsToCheck).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
-			return urlsToCheck[i]
+			db.Model(&urlsToCheck).Where("id = ?", urlsToCheck[i].ID).Where("url = ?", urlsToCheck[i].URL).Update("next_run", urlsToCheck[i].Frequency)
+			httpreponser.CallEndpoint(urlsToCheck[i].URL)
 		} else {
-			db.Model(&urlsToCheck).Where("id = ?", urlsToCheck[i].ID).Update("next_run", (urlsToCheck[i].NextRun)-1)
+			db.Model(&urlsToCheck).Where("id = ?", urlsToCheck[i].ID).Where("url = ?", urlsToCheck[i].URL).Update("next_run", (urlsToCheck[i].NextRun)-1)
 		}
 
 	}
-	return nil
 }

@@ -2,14 +2,14 @@
      "url": "https://bing.com",
       "timeout": 60,
       "skip_ssl": false,
-      "frequency" : 5,
+      "frequency" : 8,
       "group": "prod"
     },
     {
       "url": "https://github.com",
       "timeout": 120,
       "skip_ssl": false,
-      "frequency" : 2,
+      "frequency" : 15,
       "group": "prod"
     }
 ]

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"
@@ -9,18 +8,17 @@ import (
 	"log"
 	"net/http"
 	"os"
+	api "sky-meter/packages/api"
 	dbops "sky-meter/packages/dbops"
 	httpreponser "sky-meter/packages/httpres"
-	models "sky-meter/models"
-	api "sky-meter/packages/api"
-	sentry "sky-meter/packages/logger"
 	jsonops "sky-meter/packages/jsonops"
+	sentry "sky-meter/packages/logger"
 )
 
-func httpSyntheticCheck(endpoint string, time uint64) {
-	gocron.Every(time).Second().Do(callEndpoint, endpoint)
-	<-gocron.Start()
-}
+// func httpSyntheticCheck(endpoint string, time uint64) {
+// 	gocron.Every(time).Second().Do(callEndpoint, endpoint)
+// 	<-gocron.Start()
+// }
 
 func callEndpoint(endpoint string) {
 	httpresdata, _ := httpreponser.GetHttpdata(endpoint)
@@ -29,8 +27,6 @@ func callEndpoint(endpoint string) {
 
 func main() {
 	sentry.SentryInit()
-    endpoints := jsonops.InputJson()
-
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
@@ -40,15 +36,13 @@ func main() {
 		log.Println(err)
 	}
 
+	endpoints := jsonops.InputJson()
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
-	urls := dbops.GetUrlFrequency(db)
 
-	if urls != nil {
-		url, _ := urls.(models.AllEndpoints)
-		fmt.Println(url.URL)
-		callEndpoint(url.URL)
-	}
+	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
+	<-gocron.Start()
+
 
 	port := os.Getenv("PORT")
 	if port == "" {
