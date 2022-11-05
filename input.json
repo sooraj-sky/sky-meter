@@ -1,15 +1,25 @@
-[{ 
+[
+  { 
      "url": "https://bing.com",
       "timeout": 60,
       "skip_ssl": false,
-      "frequency" : 8,
+      "frequency" : 40,
       "group": "prod"
     },
     {
       "url": "https://github.com",
       "timeout": 120,
       "skip_ssl": false,
-      "frequency" : 15,
+      "frequency" : 5,
+      "group": "prod"
+    },
+        {
+      "url": "https://stackoverflow.com",
+      "timeout": 120,
+      "skip_ssl": false,
+      "frequency" : 30,
       "group": "prod"
     }
 ]
+
+
