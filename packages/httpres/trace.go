@@ -4,39 +4,13 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"log"
-	"net"
 	"net/http"
 	"net/http/httptrace"
+	models "sky-meter/models"
 	"time"
 )
 
-type Debug struct {
-	DNS struct {
-		Start   string       `json:"start"`
-		End     string       `json:"end"`
-		Host    string       `json:"host"`
-		Address []net.IPAddr `json:"address"`
-		Error   error        `json:"error"`
-	} `json:"dns"`
-	Dial struct {
-		Start string `json:"start"`
-		End   string `json:"end"`
-	} `json:"dial"`
-	Connection struct {
-		Time string `json:"time"`
-	} `json:"connection"`
-	WroteAllRequestHeaders struct {
-		Time string `json:"time"`
-	} `json:"wrote_all_request_header"`
-	WroteAllRequest struct {
-		Time string `json:"time"`
-	} `json:"wrote_all_request"`
-	FirstReceivedResponseByte struct {
-		Time string `json:"time"`
-	} `json:"first_received_response_byte"`
-}
-
-func GetHttpdata(url string) (httpdata []byte, httpsatauscode int) {
+func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
 	// Create trace struct.
 	trace, debug := trace()
 
@@ -77,8 +51,8 @@ func tlsConfig() *tls.Config {
 	}
 }
 
-func trace() (*httptrace.ClientTrace, *Debug) {
-	d := &Debug{}
+func trace() (*httptrace.ClientTrace, *models.Debug) {
+	d := &models.Debug{}
 
 	t := &httptrace.ClientTrace{
 		DNSStart: func(info httptrace.DNSStartInfo) {
@@ -127,4 +101,10 @@ func trace() (*httptrace.ClientTrace, *Debug) {
 	}
 
 	return t, d
+}
+
+func CallEndpoint(endpoint interface{}) []byte {
+	url, _ := endpoint.(string)
+	httpresdata, _ := GetHttpdata(url)
+	return (httpresdata)
 }
