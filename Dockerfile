@@ -16,7 +16,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY . .
-
+WORKDIR /go/src/app/cmd
 RUN go build -o /server
 
 EXPOSE 8080
