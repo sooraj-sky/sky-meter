@@ -37,7 +37,7 @@ func GetUrlFrequency(db *gorm.DB) {
 			httpOutput := httpreponser.CallEndpoint(urlsToCheck[i].URL)
 			var byteHttpOutput models.Debug
 			json.Unmarshal(httpOutput, &byteHttpOutput)
-			db.Create(&models.HttpOutput{OutputData: httpOutput})
+			db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL})
 		} else {
 			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].NextRun-1)
 		}

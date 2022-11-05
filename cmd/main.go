@@ -1,15 +1,12 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"net/http"
-	"os"
-	api "sky-meter/packages/api"
 	dbops "sky-meter/packages/dbops"
+	skymeter "sky-meter/packages/httpserver"
 	jsonops "sky-meter/packages/jsonops"
 	sentry "sky-meter/packages/logger"
 )
@@ -25,6 +22,7 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
+	skymeter.InitServer()
 
 	endpoints := jsonops.InputJson()
 	dbops.InitialMigration(db)
@@ -32,16 +30,5 @@ func main() {
 
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
 	<-gocron.Start()
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		log.Fatal("Please specify the HTTP port as environment variable, e.g. env PORT=8081 go run http-server.go")
-	}
-
-	log.Println("listening on port", port)
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", api.HomeLink)
-	router.HandleFunc("/health", api.SelfStatusLink)
-	log.Fatal(http.ListenAndServe(":"+port, router))
 
 }
