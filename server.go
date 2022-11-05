@@ -21,9 +21,13 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to sky-meter")
 }
 
+func SelfStatusLink(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Status OK")
+}
+
 func getStats(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	httpresdata, _ := httpreponser.GetHttpdata("https://bing.com")
+	httpresdata, _ := httpreponser.GetHttpdata("http://apache.org")
 	w.Write(httpresdata)
 	return
 }
@@ -39,9 +43,12 @@ func callEndpoint(endpoint string) {
 }
 
 func main() {
-	senenv := os.Getenv("sentry_dsn")
+	sentenv := os.Getenv("sentry_dsn")
+	if sentenv == "" {
+		log.Fatal("Please specify the sentry_dsn as environment variable, e.g. env sentry_dsn=https://your-dentry-dsn.com go run server.go")
+	}
 	senterr := sentry.Init(sentry.ClientOptions{
-		Dsn: senenv,
+		Dsn: sentenv,
 		// Set TracesSampleRate to 1.0 to capture 100%
 		// of transactions for performance monitoring.
 		// We recommend adjusting this value in production,
@@ -64,7 +71,7 @@ func main() {
 	json.Unmarshal(byteValue, &endpoints)
 
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable TimeZone=Asia/Shanghai",
+		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
 	}), &gorm.Config{})
 
@@ -74,11 +81,21 @@ func main() {
 
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
+	urls := dbops.GetUrlFrequency(db)
+	log.Println(urls)
 
-	log.Println("listening on port 8080")
+
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("Please specify the HTTP port as environment variable, e.g. env PORT=8081 go run http-server.go")
+	}
+
+	log.Println("listening on port", port)
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", homeLink)
 	router.HandleFunc("/stats", getStats).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	router.HandleFunc("/health", SelfStatusLink)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 
 }

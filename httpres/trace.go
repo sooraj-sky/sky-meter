@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func GetHttpdata(url string) (httpdata []byte, httpsatauscode int) {
+func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
 	// Create trace struct.
 	trace, debug := trace()
 
