@@ -1,6 +1,7 @@
 package models
 
 import (
+	"gorm.io/datatypes"
 	"net"
 )
 
@@ -10,6 +11,11 @@ type JsonInput []struct {
 	SkipSsl   bool   `json:"skip_ssl",omitempty`
 	Frequency uint64 `json:"frequency",omitempty`
 	Group     string `json:"group",omitempty`
+}
+
+type HttpOutput struct {
+	ID         uint           `gorm:"primaryKey"`
+	OutputData datatypes.JSON `json:"attributes" gorm:"type:json"`
 }
 
 type AllEndpoints struct {
