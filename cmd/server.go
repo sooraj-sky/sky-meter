@@ -15,10 +15,6 @@ import (
 	sentry "sky-meter/packages/logger"
 )
 
-// func httpSyntheticCheck(endpoint string, time uint64) {
-// 	gocron.Every(time).Second().Do(callEndpoint, endpoint)
-// 	<-gocron.Start()
-// }
 
 func callEndpoint(endpoint string) {
 	httpresdata, _ := httpreponser.GetHttpdata(endpoint)
@@ -30,6 +26,7 @@ func main() {
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+
 	}), &gorm.Config{})
 
 	if err != nil {
@@ -42,7 +39,6 @@ func main() {
 
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
 	<-gocron.Start()
-
 
 	port := os.Getenv("PORT")
 	if port == "" {
