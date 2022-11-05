@@ -1,6 +1,7 @@
 package dbops
 
 import (
+	"encoding/json"
 	"gorm.io/gorm"
 	models "sky-meter/models"
 	httpreponser "sky-meter/packages/httpres"
@@ -8,6 +9,7 @@ import (
 
 func InitialMigration(db *gorm.DB) {
 	db.AutoMigrate(&models.AllEndpoints{})
+	db.AutoMigrate(&models.HttpOutput{})
 }
 
 func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
@@ -26,14 +28,22 @@ func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
 func GetUrlFrequency(db *gorm.DB) {
 	var urlsToCheck []models.AllEndpoints
 	var urlsId []models.AllEndpoints
+
 	db.Find(&urlsToCheck)
 	for i := 0; i < len(urlsToCheck); i++ {
 		db.First(&urlsId, urlsToCheck[i].ID)
 		if urlsToCheck[i].NextRun == 0 {
 			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
-			httpreponser.CallEndpoint(urlsToCheck[i].URL)
+			httpOutput := httpreponser.CallEndpoint(urlsToCheck[i].URL)
+			var byteHttpOutput models.Debug
+			json.Unmarshal(httpOutput, &byteHttpOutput)
+			db.Create(&models.HttpOutput{OutputData: httpOutput})
 		} else {
 			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].NextRun-1)
 		}
 	}
+}
+
+func InputHttpToDb(db *gorm.DB) {
+
 }

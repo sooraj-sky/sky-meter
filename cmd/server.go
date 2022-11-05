@@ -10,16 +10,9 @@ import (
 	"os"
 	api "sky-meter/packages/api"
 	dbops "sky-meter/packages/dbops"
-	httpreponser "sky-meter/packages/httpres"
 	jsonops "sky-meter/packages/jsonops"
 	sentry "sky-meter/packages/logger"
 )
-
-
-func callEndpoint(endpoint string) {
-	httpresdata, _ := httpreponser.GetHttpdata(endpoint)
-	log.Println(string(httpresdata))
-}
 
 func main() {
 	sentry.SentryInit()
