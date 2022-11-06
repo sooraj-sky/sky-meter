@@ -5,8 +5,12 @@ Currenly we have addded Database support. The endpoints and http output are now 
 
 
 ## Tested Environments
-GO version: 1.18
-Tested OS: Ubuntu 22.10, alpine(docker), Macos
+GO version: 1.18  
+Postgres : 15.0 
+### Tested OS
+- Ubuntu 22.10 
+- alpine(docker)
+- Macos
 
 We are highly recommending to run th app as docker container. 
 See Docker Hub Image 
@@ -50,6 +54,7 @@ To add a URL to minitoring is pertty simple. Create **input.json** to add your e
 Clone the code
 ```sh  
 $ git clone https://github.com/sooraj-sky/sky-meter.git
+$ cd sky-meter
 ```  
 Run the postgres docker container
 ```sh  
