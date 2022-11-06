@@ -29,6 +29,14 @@ Run the postgres docker container
 ```sh  
 $ docker-compose up -d
 ```  
+Export sentry dsn  
+```sh
+$ export sentry_dsn="<yourDsnHere>"
+```  
+Export the port
+```sh
+$ export PORT=8080
+```
 Run the project
 ```sh    
 $ go run cmd/main.go  
