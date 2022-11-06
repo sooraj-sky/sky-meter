@@ -1,19 +1,38 @@
 # sky-meter
 
-sky-meter is an synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts.
+sky-meter is an synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts. Here we are using the go httptrace library.  
+Currenly we have addded Database support. The endpoints and http output are now bing saved in Database. We also have a sentry integration to catch the runtime errors.
 
 
-### Tested Environment
+## Tested Environments
 GO version: 1.18
-
-Tested OS: Ubuntu 22.10, alpine(docker)
+Tested OS: Ubuntu 22.10, alpine(docker), Macos
 
 We are highly recommending to run th app as docker container. 
 See Docker Hub Image 
 https://hub.docker.com/r/soorajsky/sky-meter
 
+## Environment variables
+Currenly we have two environment variables.  
+1. sentry_dsn
+2. PORT
 
-default port : 8080
+- You can create sentry project and imput the **sentry_dsn** as env variable.  
+- You can export the **PORT** variable to set the http port of the server
+
+## Run the Code
+Clone the code
+```sh  
+$ git clone https://github.com/sooraj-sky/sky-meter.git
+```  
+Run the postgres docker container
+```sh  
+$ docker-compose up -d
+```  
+Run the project
+```sh    
+$ go run cmd/main.go  
+```
 
 ## CI
 
@@ -21,18 +40,5 @@ we are sing concourse CI for  Main Branch
 
 For release branch we have Github Actions
 
-
 install : https://concourse-ci.org/install.html
 
-## Environment variables
-
-create credentials.yml and add the following variables
-
-docker-hub-email: <your-hub-email>
-docker-hub-username: <your-hub-user>
-docker-hub-password: <your-hub-pass>
-
-fly -t tutorial set-pipeline -p skymeter-build -c concourse-pipeline.yaml -l credentials.yml
-
-
-add timezone
