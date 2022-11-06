@@ -20,6 +20,32 @@ Currenly we have two environment variables.
 - You can create sentry project and imput the **sentry_dsn** as env variable.  
 - You can export the **PORT** variable to set the http port of the server
 
+## Add URLs to check
+To add a URL to minitoring is pertty simple. Create **input.json** to add your endpoints to monitor. See an example of **input.json** below  
+```sh
+[
+    {
+      "url": "https://github.com",
+      "timeout": 120,
+      "skip_ssl": false,
+      "frequency" : 5,
+      "group": "prod"
+    },
+        {
+      "url": "https://stackoverflow.com",
+      "timeout": 120,
+      "skip_ssl": false,
+      "frequency" : 30,
+      "group": "prod"
+    }
+]
+```
+> _url_ : url to monitor (string)   
+> _timeout_ : Timeout of request in secont (int)  
+> _skip_ssl_ : set flase if you want to skip the ssl verification (bool)  
+> _frequency_ : frequency of health check in secont (int)  
+> _group_ : Add group properties (string)
+
 ## Run the Code
 Clone the code
 ```sh  
