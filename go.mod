@@ -5,6 +5,7 @@ go 1.18
 require github.com/gorilla/mux v1.8.0
 
 require (
+	github.com/BurntSushi/xgb v0.0.0-20210121224620-deaf085860bc // indirect
 	github.com/getsentry/sentry-go v0.14.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/robfig/cron v1.2.0 // indirect
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966 // indirect
+	github.com/vova616/screenshot v0.0.0-20220801010501-56c10359473c // indirect
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 	golang.org/x/text v0.3.7 // indirect

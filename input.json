@@ -19,6 +19,13 @@
       "skip_ssl": false,
       "frequency" : 30,
       "group": "prod"
+    },
+    {
+      "url": "https://edistrict.kerala.gov.in",
+      "timeout": 120,
+      "skip_ssl": false,
+      "frequency" : 30,
+      "group": "prod"
     }
 ]
 

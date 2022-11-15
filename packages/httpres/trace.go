@@ -35,6 +35,7 @@ func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
 func client() *http.Client {
 	return &http.Client{
 		Transport: transport(),
+		Timeout:   time.Duration(11115 * time.Millisecond),
 	}
 }
 
@@ -103,8 +104,8 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 	return t, d
 }
 
-func CallEndpoint(endpoint interface{}) []byte {
+func CallEndpoint(endpoint interface{}) ([]byte, int) {
 	url, _ := endpoint.(string)
-	httpresdata, _ := GetHttpdata(url)
-	return (httpresdata)
+	httpresdata, statusCode := GetHttpdata(url)
+	return httpresdata, statusCode
 }
