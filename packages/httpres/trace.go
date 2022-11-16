@@ -104,9 +104,10 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 	return t, d
 }
 
-func CallEndpoint(endpoint interface{}, timeout interface{}) ([]byte, int) {
+func CallEndpoint(endpoint interface{}, timeout int) ([]byte, int) {
 	url, _ := endpoint.(string)
-	TimeoutInt, _ := endpoint.(time.Duration)
-	httpresdata, statusCode := GetHttpdata(url, TimeoutInt)
+	// TimeoutInt, _ := timeout.(time.Duration)
+	// log.Println(TimeoutInt, "hi")
+	httpresdata, statusCode := GetHttpdata(url, time.Duration(timeout*1000))
 	return httpresdata, statusCode
 }
