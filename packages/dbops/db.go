@@ -33,7 +33,7 @@ func GetUrlFrequency(db *gorm.DB) {
 		db.First(&urlsId, urlsToCheck[i].ID)
 		if urlsToCheck[i].NextRun == 0 {
 			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
-			httpOutput, HttpStatusCode := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout)
+			httpOutput, HttpStatusCode := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
 			var byteHttpOutput models.Debug
 			json.Unmarshal(httpOutput, &byteHttpOutput)
 			db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode})
