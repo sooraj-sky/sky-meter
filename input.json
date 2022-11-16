@@ -26,6 +26,13 @@
       "skip_ssl": false,
       "frequency" : 30,
       "group": "prod"
+    },
+    {
+      "url": "http://www.tanscst.nic.in",
+      "timeout": 1,
+      "skip_ssl": false,
+      "frequency" : 10,
+      "group": "prod"
     }
 ]
 

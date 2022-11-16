@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
+func GetHttpdata(url string, timeout time.Duration) (httpdata []byte, httpstatuscode int) {
 	// Create trace struct.
 	trace, debug := trace()
 
@@ -22,7 +22,7 @@ func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
 	req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
 
 	// MAke a request.
-	res, err := client().Do(req)
+	res, err := client(timeout).Do(req)
 	if err != nil {
 		log.Fatalln("client error", err)
 	}
@@ -32,10 +32,10 @@ func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
 	return data, res.StatusCode
 }
 
-func client() *http.Client {
+func client(timeout time.Duration) *http.Client {
 	return &http.Client{
 		Transport: transport(),
-		Timeout:   time.Duration(11115 * time.Millisecond),
+		Timeout:   time.Duration(timeout * time.Millisecond),
 	}
 }
 
@@ -104,8 +104,9 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 	return t, d
 }
 
-func CallEndpoint(endpoint interface{}) ([]byte, int) {
+func CallEndpoint(endpoint interface{}, timeout interface{}) ([]byte, int) {
 	url, _ := endpoint.(string)
-	httpresdata, statusCode := GetHttpdata(url)
+	TimeoutInt, _ := endpoint.(time.Duration)
+	httpresdata, statusCode := GetHttpdata(url, TimeoutInt)
 	return httpresdata, statusCode
 }
