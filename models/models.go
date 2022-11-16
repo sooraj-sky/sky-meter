@@ -1,8 +1,9 @@
 package models
 
 import (
-	"gorm.io/datatypes"
 	"net"
+
+	"gorm.io/datatypes"
 )
 
 type JsonInput []struct {
@@ -17,6 +18,7 @@ type HttpOutput struct {
 	ID         uint           `gorm:"primaryKey"`
 	OutputData datatypes.JSON `json:"attributes" gorm:"type:json"`
 	URL        string
+	StatusCode int
 }
 
 type AllEndpoints struct {

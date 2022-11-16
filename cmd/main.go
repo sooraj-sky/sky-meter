@@ -1,14 +1,14 @@
 package main
 
 import (
+	"log"
+	dbops "sky-meter/packages/dbops"
+	jsonops "sky-meter/packages/jsonops"
+	sentry "sky-meter/packages/logger"
+
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
-	dbops "sky-meter/packages/dbops"
-	skymeter "sky-meter/packages/httpserver"
-	jsonops "sky-meter/packages/jsonops"
-	sentry "sky-meter/packages/logger"
 )
 
 func main() {
@@ -22,13 +22,14 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	skymeter.InitServer()
 
 	endpoints := jsonops.InputJson()
+
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
 
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
 	<-gocron.Start()
+	//	skymeter.InitServer()
 
 }
