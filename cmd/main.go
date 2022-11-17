@@ -12,12 +12,14 @@ import (
 )
 
 func main() {
+	log.Println("Launching sky-meter")
 	sentry.SentryInit()
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
 
-	}), &gorm.Config{})
+	}), &gorm.Config{ Logger: logger.Default.LogMode(logger.Info),
+	})
 
 	if err != nil {
 		log.Println(err)
@@ -27,7 +29,8 @@ func main() {
 
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
-
+	log.Println("Updated sky-meter targets")
+	log.Println("Staring sky-meter Health Check")
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
 	<-gocron.Start()
 	//	skymeter.InitServer()
