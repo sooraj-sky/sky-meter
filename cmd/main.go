@@ -18,8 +18,7 @@ func main() {
 		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
 
-	}), &gorm.Config{ Logger: logger.Default.LogMode(logger.Info),
-	})
+	}), &gorm.Config{ })
 
 	if err != nil {
 		log.Println(err)
