@@ -30,10 +30,10 @@ func main() {
 	dbops.InsertUrlsToDb(db, endpoints)
 	log.Println("Updated sky-meter targets")
 	log.Println("Staring sky-meter Health Check")
-	skymeter.InitServer()
+	
 
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
 	<-gocron.Start()
-	
+	skymeter.InitServer()
 
 }
