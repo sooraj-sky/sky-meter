@@ -34,6 +34,7 @@ type AllEndpoints struct {
 	Frequency uint64
 	Group     string
 	NextRun   int
+	Active    bool
 }
 
 type Debug struct {
