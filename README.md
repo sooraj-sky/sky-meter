@@ -45,7 +45,7 @@ To add a URL to minitoring is pertty simple. Create **input.json** to add your e
 ]
 ```
 > _url_ : url to monitor (string)   
-> _timeout_ : Timeout of request in secont (int)  
+> _timeout_ : Timeout of request in Millisecond (int)  
 > _skip_ssl_ : set flase if you want to skip the ssl verification (bool)  
 > _frequency_ : frequency of health check in secont (int)  
 > _group_ : Add group properties (string)

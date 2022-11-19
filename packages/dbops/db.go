@@ -37,19 +37,21 @@ func GetUrlFrequency(db *gorm.DB) {
 	db.Find(&urlsToCheck)
 	for i := 0; i < len(urlsToCheck); i++ {
 		db.First(&urlsId, urlsToCheck[i].ID)
-		if urlsToCheck[i].NextRun == 0 {
-			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
-			httpOutput, HttpStatusCode, err := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
-			if err != nil {
-				db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
-			} else {
-				var byteHttpOutput models.Debug
-				json.Unmarshal(httpOutput, &byteHttpOutput)
-				db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode})
-			}
+		if urlsToCheck[i].Active {
+			if urlsToCheck[i].NextRun == 0 {
+				db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
+				httpOutput, HttpStatusCode, err := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
+				if err != nil {
+					db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
+				} else {
+					var byteHttpOutput models.Debug
+					json.Unmarshal(httpOutput, &byteHttpOutput)
+					db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode})
+				}
 
-		} else {
-			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].NextRun-1)
+			} else {
+				db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].NextRun-1)
+			}
 		}
 	}
 }
