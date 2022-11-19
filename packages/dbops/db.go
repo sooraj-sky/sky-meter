@@ -2,6 +2,7 @@ package dbops
 
 import (
 	"encoding/json"
+	"log"
 	models "sky-meter/models"
 	httpreponser "sky-meter/packages/httpres"
 
@@ -23,7 +24,7 @@ func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
 	for i := 0; i < len(endpoints); i++ {
 		db.Where("URL=?", endpoints[i].URL).Find(&urlCheck)
 		if urlCheck.CreatedAt == 0 && urlCheck.URL != endpoints[i].URL {
-			db.Create(&models.AllEndpoints{URL: endpoints[i].URL, Timeout: endpoints[i].Timeout, SkipSsl: endpoints[i].SkipSsl, Frequency: endpoints[i].Frequency, Group: endpoints[i].Group})
+			db.Create(&models.AllEndpoints{URL: endpoints[i].URL, Timeout: endpoints[i].Timeout, SkipSsl: endpoints[i].SkipSsl, Frequency: endpoints[i].Frequency, Group: endpoints[i].Group, Active: true})
 		}
 		urlCheck = urlsId
 	}
@@ -54,5 +55,26 @@ func GetUrlFrequency(db *gorm.DB) {
 }
 
 func RemoveOldEntry(db *gorm.DB, endpoints models.JsonInput) {
+	var urlCheck []models.AllEndpoints
+	db.Find(&urlCheck)
+	var urlsId models.AllEndpoints
+
+	for i := 0; i < len(urlCheck); i++ {
+		var findCount int
+		for m := range endpoints {
+			if endpoints[m].URL == urlCheck[i].URL {
+				log.Println("found URL", urlCheck[i].URL)
+				if urlCheck[i].Active != true {
+					db.Model(&urlsId).Where("url = ?", urlCheck[i].URL).Update("Active", true)
+				}
+			} else {
+				findCount = findCount + 1
+			}
+		}
+		if findCount >= len(endpoints) {
+			log.Println(urlCheck[i].URL, "Not found in input.json, removing the check")
+			db.Model(&urlsId).Where("url = ?", urlCheck[i].URL).Update("Active", false)
+		}
+	}
 
 }

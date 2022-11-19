@@ -27,6 +27,7 @@ func main() {
 	endpoints := jsonops.InputJson()
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
+	dbops.RemoveOldEntry(db, endpoints)
 	log.Println("Updated sky-meter targets")
 	log.Println("Staring sky-meter Health Check")
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
