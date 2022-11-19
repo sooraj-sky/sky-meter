@@ -6,6 +6,7 @@ import (
 	skymeter "sky-meter/packages/httpserver"
 	jsonops "sky-meter/packages/jsonops"
 	sentry "sky-meter/packages/logger"
+
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,20 +19,16 @@ func main() {
 		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
 
-	}), &gorm.Config{ })
+	}), &gorm.Config{})
 
 	if err != nil {
 		log.Println(err)
 	}
-
 	endpoints := jsonops.InputJson()
-
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
 	log.Println("Updated sky-meter targets")
 	log.Println("Staring sky-meter Health Check")
-	
-
 	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
 	<-gocron.Start()
 	skymeter.InitServer()
