@@ -60,8 +60,11 @@ Run the postgres docker container
 ```sh  
 $ docker-compose up -d
 ```  
+Added Env Option: You can enable sentry by adding
+
 Export sentry dsn  
 ```sh
+$ export mode="dev"
 $ export sentry_dsn="<yourDsnHere>"
 ```  
 Export the port
