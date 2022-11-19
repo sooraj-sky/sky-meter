@@ -71,6 +71,10 @@ Export the port
 ```sh
 $ export PORT=8080
 ```
+Export opsgenieSecret
+```sh
+$ export opsgeniesecret="your-opsgenie-api-keyhere"
+```
 Run the project
 ```sh    
 $ go run cmd/main.go  

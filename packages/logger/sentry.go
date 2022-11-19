@@ -1,9 +1,10 @@
 package sentry
 
 import (
-	"github.com/getsentry/sentry-go"
 	"log"
 	"os"
+
+	"github.com/getsentry/sentry-go"
 )
 
 func SentryInit() {
@@ -11,7 +12,7 @@ func SentryInit() {
 	if mode == "dev" {
 		sentenv := os.Getenv("sentry_dsn")
 		if sentenv == "" {
-			log.Fatal("Please specify the sentry_dsn as environment variable, e.g. env sentry_dsn=https://your-dentry-dsn.com go run server.go")
+			log.Fatal("Please specify the sentry_dsn as environment variable, e.g. env sentry_dsn=https://your-dentry-dsn.com go run cmd/main.go")
 		}
 		senterr := sentry.Init(sentry.ClientOptions{
 			Dsn: sentenv,

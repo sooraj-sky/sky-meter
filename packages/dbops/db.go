@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	models "sky-meter/models"
+	skyalerts "sky-meter/packages/alerts"
 	httpreponser "sky-meter/packages/httpres"
 
 	"gorm.io/gorm"
@@ -43,6 +44,7 @@ func GetUrlFrequency(db *gorm.DB) {
 				httpOutput, HttpStatusCode, err := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
 				if err != nil {
 					db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
+					skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err)
 				} else {
 					var byteHttpOutput models.Debug
 					json.Unmarshal(httpOutput, &byteHttpOutput)
