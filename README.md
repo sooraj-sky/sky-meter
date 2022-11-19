@@ -45,7 +45,7 @@ To add a URL to minitoring is pertty simple. Create **input.json** to add your e
 ]
 ```
 > _url_ : url to monitor (string)   
-> _timeout_ : Timeout of request in secont (int)  
+> _timeout_ : Timeout of request in Millisecond (int)  
 > _skip_ssl_ : set flase if you want to skip the ssl verification (bool)  
 > _frequency_ : frequency of health check in secont (int)  
 > _group_ : Add group properties (string)
@@ -60,8 +60,11 @@ Run the postgres docker container
 ```sh  
 $ docker-compose up -d
 ```  
+Added Env Option: You can enable sentry by adding
+
 Export sentry dsn  
 ```sh
+$ export mode="dev"
 $ export sentry_dsn="<yourDsnHere>"
 ```  
 Export the port

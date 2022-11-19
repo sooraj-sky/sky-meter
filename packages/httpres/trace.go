@@ -106,6 +106,6 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 
 func CallEndpoint(endpoint interface{}, timeout int, SkipSsl bool) ([]byte, int, error) {
 	url, _ := endpoint.(string)
-	httpresdata, statusCode, err := GetHttpdata(url, time.Duration(timeout*1000), SkipSsl)
+	httpresdata, statusCode, err := GetHttpdata(url, time.Duration(timeout), SkipSsl)
 	return httpresdata, statusCode, err
 }
