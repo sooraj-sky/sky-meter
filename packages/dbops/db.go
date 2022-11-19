@@ -4,8 +4,13 @@ import (
 	"encoding/json"
 	models "sky-meter/models"
 	httpreponser "sky-meter/packages/httpres"
+
 	"gorm.io/gorm"
 )
+
+type error interface {
+	Error() string
+}
 
 func InitialMigration(db *gorm.DB) {
 	db.AutoMigrate(&models.AllEndpoints{})
@@ -33,10 +38,15 @@ func GetUrlFrequency(db *gorm.DB) {
 		db.First(&urlsId, urlsToCheck[i].ID)
 		if urlsToCheck[i].NextRun == 0 {
 			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
-			httpOutput, HttpStatusCode := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
-			var byteHttpOutput models.Debug
-			json.Unmarshal(httpOutput, &byteHttpOutput)
-			db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode})
+			httpOutput, HttpStatusCode, err := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
+			if err != nil {
+				db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
+			} else {
+				var byteHttpOutput models.Debug
+				json.Unmarshal(httpOutput, &byteHttpOutput)
+				db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode})
+			}
+
 		} else {
 			db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].NextRun-1)
 		}
