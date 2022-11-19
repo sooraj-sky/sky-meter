@@ -2,7 +2,7 @@
 
 sky-meter is an synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts. Here we are using the go httptrace library.  
 Currenly we have addded Database support. The endpoints and http output are now bing saved in Database. We also have a sentry integration to catch the runtime errors.
-
+ Development is in progress
 
 ## Tested Environments
 GO version: 1.18  
