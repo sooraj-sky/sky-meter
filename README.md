@@ -30,14 +30,14 @@ To add a URL to minitoring is pertty simple. Create **input.json** to add your e
 [
     {
       "url": "https://github.com",
-      "timeout": 120,
+      "timeout": 1200,
       "skip_ssl": false,
       "frequency" : 5,
       "group": "prod"
     },
         {
       "url": "https://stackoverflow.com",
-      "timeout": 120,
+      "timeout": 1200,
       "skip_ssl": false,
       "frequency" : 30,
       "group": "prod"
