@@ -30,6 +30,7 @@ type OpsgenieAlertData struct {
 	CreatedAt int64 `gorm:"autoUpdateTime"`
 	URL       string
 	RequestId string
+	Error     string
 	Active    bool
 }
 

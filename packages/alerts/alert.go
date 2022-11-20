@@ -2,7 +2,6 @@ package skyalerts
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -49,7 +48,6 @@ func OpsgenieCreateAlert(errorurl string, description error, group string) strin
 func CheckAlertStatus(alertRequestId string) string {
 	apiclient := &http.Client{}
 	url := "https://api.opsgenie.com/v2/alerts/requests/" + alertRequestId + "?identifierType=id"
-	log.Println(url)
 	opsgenieSecret := os.Getenv("opsgeniesecret")
 	opsgenieSecretString := "GenieKey " + opsgenieSecret
 	if opsgenieSecret == "" {
@@ -58,20 +56,20 @@ func CheckAlertStatus(alertRequestId string) string {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		fmt.Print(err.Error())
+		log.Println(err.Error())
 	}
 
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Authorization", opsgenieSecretString)
 	resp, err := apiclient.Do(req)
 	if err != nil {
-		fmt.Print(err.Error())
+		log.Println(err.Error())
 	}
 	defer resp.Body.Close()
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Print(err.Error())
+		log.Println(err.Error())
 	}
 	var responseObject models.OpsGenieAlertStatus
 	json.Unmarshal(bodyBytes, &responseObject)
@@ -88,6 +86,5 @@ func CheckAlertStatus(alertRequestId string) string {
 	if err != nil {
 		log.Printf("error: %s\n", err)
 	}
-
 	return getResult.Status
 }
