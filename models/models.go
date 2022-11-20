@@ -2,6 +2,7 @@ package models
 
 import (
 	"net"
+	"time"
 
 	"gorm.io/datatypes"
 )
@@ -22,6 +23,14 @@ type HttpOutput struct {
 	StatusCode int
 	Timeout    bool
 	Error      string
+}
+
+type OpsgenieAlertData struct {
+	ID        uint  `gorm:"primaryKey"`
+	CreatedAt int64 `gorm:"autoUpdateTime"`
+	URL       string
+	RequestId string
+	Active    bool
 }
 
 type AllEndpoints struct {
@@ -61,4 +70,19 @@ type Debug struct {
 	FirstReceivedResponseByte struct {
 		Time string `json:"time"`
 	} `json:"first_received_response_byte"`
+}
+
+type OpsGenieAlertStatus struct {
+	Data struct {
+		Success       bool      `json:"success"`
+		Action        string    `json:"action"`
+		ProcessedAt   time.Time `json:"processedAt"`
+		IntegrationID string    `json:"integrationId"`
+		IsSuccess     bool      `json:"isSuccess"`
+		Status        string    `json:"status"`
+		AlertID       string    `json:"alertId"`
+		Alias         string    `json:"alias"`
+	} `json:"data"`
+	Took      float64 `json:"took"`
+	RequestID string  `json:"requestId"`
 }
