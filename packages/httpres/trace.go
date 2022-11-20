@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
+func GetHttpdata(url string, timeout time.Duration, SkipSsl bool) (httpdata []byte, httpstatuscode int, errs error) {
 	// Create trace struct.
 	trace, debug := trace()
 
@@ -22,25 +22,26 @@ func GetHttpdata(url string) (httpdata []byte, httpstatuscode int) {
 	req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
 
 	// MAke a request.
-	res, err := client().Do(req)
+	res, err := client(timeout, SkipSsl).Do(req)
 	if err != nil {
-		log.Fatalln("client error", err)
+		return nil, 0, err
 	}
 	defer res.Body.Close()
 
 	data, err := json.MarshalIndent(debug, "", "    ")
-	return data, res.StatusCode
+	return data, res.StatusCode, err
 }
 
-func client() *http.Client {
+func client(timeout time.Duration, SkipSsl bool) *http.Client {
 	return &http.Client{
-		Transport: transport(),
+		Transport: transport(SkipSsl),
+		Timeout:   time.Duration(timeout * time.Millisecond),
 	}
 }
 
-func transport() *http.Transport {
+func transport(SkipSsl bool) *http.Transport {
 	return &http.Transport{
-		DisableKeepAlives: true,
+		DisableKeepAlives: SkipSsl,
 		TLSClientConfig:   tlsConfig(),
 	}
 }
@@ -103,8 +104,8 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 	return t, d
 }
 
-func CallEndpoint(endpoint interface{}) []byte {
+func CallEndpoint(endpoint interface{}, timeout int, SkipSsl bool) ([]byte, int, error) {
 	url, _ := endpoint.(string)
-	httpresdata, _ := GetHttpdata(url)
-	return (httpresdata)
+	httpresdata, statusCode, err := GetHttpdata(url, time.Duration(timeout), SkipSsl)
+	return httpresdata, statusCode, err
 }

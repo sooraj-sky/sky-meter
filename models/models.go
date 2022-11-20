@@ -1,8 +1,10 @@
 package models
 
 import (
-	"gorm.io/datatypes"
 	"net"
+	"time"
+
+	"gorm.io/datatypes"
 )
 
 type JsonInput []struct {
@@ -15,8 +17,21 @@ type JsonInput []struct {
 
 type HttpOutput struct {
 	ID         uint           `gorm:"primaryKey"`
+	CreatedAt  int64          `gorm:"autoUpdateTime"`
 	OutputData datatypes.JSON `json:"attributes" gorm:"type:json"`
 	URL        string
+	StatusCode int
+	Timeout    bool
+	Error      string
+}
+
+type OpsgenieAlertData struct {
+	ID        uint  `gorm:"primaryKey"`
+	CreatedAt int64 `gorm:"autoUpdateTime"`
+	URL       string
+	RequestId string
+	Error     string
+	Active    bool
 }
 
 type AllEndpoints struct {
@@ -29,6 +44,7 @@ type AllEndpoints struct {
 	Frequency uint64
 	Group     string
 	NextRun   int
+	Active    bool
 }
 
 type Debug struct {
@@ -55,4 +71,19 @@ type Debug struct {
 	FirstReceivedResponseByte struct {
 		Time string `json:"time"`
 	} `json:"first_received_response_byte"`
+}
+
+type OpsGenieAlertStatus struct {
+	Data struct {
+		Success       bool      `json:"success"`
+		Action        string    `json:"action"`
+		ProcessedAt   time.Time `json:"processedAt"`
+		IntegrationID string    `json:"integrationId"`
+		IsSuccess     bool      `json:"isSuccess"`
+		Status        string    `json:"status"`
+		AlertID       string    `json:"alertId"`
+		Alias         string    `json:"alias"`
+	} `json:"data"`
+	Took      float64 `json:"took"`
+	RequestID string  `json:"requestId"`
 }

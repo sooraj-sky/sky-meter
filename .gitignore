@@ -5,7 +5,9 @@
 *.swp
 *.swn
 *.swo
-
+.DS_Store
+test.go
+*test.go
 # Redis
 *.rdb
 
