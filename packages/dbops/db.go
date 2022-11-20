@@ -49,14 +49,14 @@ func GetUrlFrequency(db *gorm.DB) {
 
 					if alertStatus.URL == urlsToCheck[i].URL {
 						AlertStatus := skyalerts.CheckAlertStatus(alertStatus.RequestId)
-						if AlertStatus == "closed" {
+						if (AlertStatus == "closed") || (alertStatus.Error != err.Error()) {
 							alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
 							db.Model(&alertStatus).Where("url = ?", urlsToCheck[i].URL).Update("request_id", alertReqId)
 						}
 
 					} else {
 						alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
-						db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Active: true})
+						db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Error: err.Error(), Active: true})
 						db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
 					}
 				} else {
