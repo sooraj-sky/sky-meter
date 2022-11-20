@@ -35,7 +35,7 @@
       "group": "prod"
     },
     {
-      "url": "http://www.tanscst.nic.iddn",
+      "url": "http://www.tanscst.nic.issn",
       "timeout": 2000,
       "skip_ssl": false,
       "frequency" : 10,

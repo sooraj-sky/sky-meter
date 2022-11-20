@@ -17,6 +17,7 @@ type error interface {
 func InitialMigration(db *gorm.DB) {
 	db.AutoMigrate(&models.AllEndpoints{})
 	db.AutoMigrate(&models.HttpOutput{})
+	db.AutoMigrate(&models.OpsgenieAlertData{})
 }
 
 func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
@@ -34,6 +35,7 @@ func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
 func GetUrlFrequency(db *gorm.DB) {
 	var urlsToCheck []models.AllEndpoints
 	var urlsId []models.AllEndpoints
+	var alertStatus models.OpsgenieAlertData
 
 	db.Find(&urlsToCheck)
 	for i := 0; i < len(urlsToCheck); i++ {
@@ -43,8 +45,20 @@ func GetUrlFrequency(db *gorm.DB) {
 				db.Model(&urlsId).Where("id = ?", urlsToCheck[i].ID).Update("next_run", urlsToCheck[i].Frequency)
 				httpOutput, HttpStatusCode, err := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
 				if err != nil {
-					db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
-					skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err)
+					db.First(&alertStatus, "url = ?", urlsToCheck[i].URL)
+
+					if alertStatus.URL == urlsToCheck[i].URL {
+						AlertStatus := skyalerts.CheckAlertStatus(alertStatus.RequestId)
+						if AlertStatus == "closed" {
+							alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
+							db.Model(&alertStatus).Where("url = ?", urlsToCheck[i].URL).Update("request_id", alertReqId)
+						}
+
+					} else {
+						alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
+						db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Active: true})
+						db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
+					}
 				} else {
 					var byteHttpOutput models.Debug
 					json.Unmarshal(httpOutput, &byteHttpOutput)
