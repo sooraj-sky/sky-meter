@@ -87,3 +87,15 @@ type OpsGenieAlertStatus struct {
 	Took      float64 `json:"took"`
 	RequestID string  `json:"requestId"`
 }
+
+type SmtpErr struct {
+	URL string
+    Subject string
+    Downtime string
+    Reason string
+    Count int
+    Mailto string
+    Mailfrom string
+    Mailserver string
+    Mailport int
+}
