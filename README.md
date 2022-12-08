@@ -75,6 +75,10 @@ Export opsgenieSecret
 ```sh
 $ export opsgeniesecret="your-opsgenie-api-keyhere"
 ```
+Export email passsword
+```sh
+export emailpass="your-email-pass-here"
+```
 Run the project
 ```sh    
 $ go run cmd/main.go  
