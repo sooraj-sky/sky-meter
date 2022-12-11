@@ -5,9 +5,19 @@
             @include font-size(8, desktop, true, true, true);
         }
     }
+	background: color(bg, 1i);
+    color: color(typography, 2);
 
     a {
         @include anchor-aspect(footer);
+    }
+
+    &::before {
+        display: none;
+
+        .lights-off & {
+            display: block;
+        }
     }
 }
 
@@ -35,14 +45,21 @@
     margin-bottom: 24px;
 }
 
+.footer-links,
+.footer-social-links {
+
+    li {
+
+        + li {
+            margin-left: 16px;
+        }
+    }
+}
+
 .footer-social-links {
 
     li {
         display: inline-flex;
-
-		+ li {
-			margin-left: 16px;
-		}
 
         a {
             padding: 8px;
@@ -50,26 +67,12 @@
     }
 }
 
-.footer-links {
-
-    li {
-
-        + li {
-            margin-left: 24px;
-        }
-    }
-}
-
 @include media( '>medium' ) {
-
-	.site-footer {
-		margin-top: 20px;
-	}
 
     .site-footer-inner {
         justify-content: space-between;
-		padding-top: 64px;
-		padding-bottom: 64px;
+		padding-top: 72px;
+		padding-bottom: 72px;
     }
 
     .footer-brand,

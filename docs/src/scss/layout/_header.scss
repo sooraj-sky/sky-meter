@@ -1,5 +1,21 @@
 .site-header {
+    position: relative;
     padding: 24px 0;
+	z-index: 2;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: -140px;
+		right: -100px;
+		width: 1440px;
+		height: 324px;
+		background-image: url('../images/header-illustration-light.svg');
+
+		.lights-off & {
+			background-image: url('../images/header-illustration-dark.svg');
+		}
+	}
 }
 
 .site-header-inner {
@@ -33,21 +49,9 @@
 @include media( '>medium' ) {
 
 	.site-header {
-		position: relative;
 
 		&::before {
-			content: '';
-			position: absolute;
-		    top: 0;
-		    left: 0;
-		    width: 100%;
-		    height: 700px;
-		    background: color(bg, 3);
-		    background: linear-gradient(80deg, rgba(color(bg, 3), .5) 0%, rgba(color(bg, 3), 0) 100%);
-		    -webkit-transform-origin: 0;
-		    transform-origin: 0;
-		    -webkit-transform: skewY(-12deg);
-		    transform: skewY(-12deg);
+			display: none;
 		}
 	}
 }

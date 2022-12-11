@@ -1,15 +1,15 @@
 {
-  "name": "solid",
+  "name": "switch",
   "version": "1.0.0",
-  "description": "Solid Template",
+  "description": "Switch Template",
   "author": "Pasquale Vitiello <pasqualevitiello@gmail.com>",
   "license": "GPLv3",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/pasqualevitiello/solid.git"
+    "url": "https://bitbucket.org/pasqualevitiello/switch.git"
   },
   "bugs": {
-    "url": "https://bitbucket.org/pasqualevitiello/solid/issues"
+    "url": "https://bitbucket.org/pasqualevitiello/switch/issues"
   },
   "scripts": {
     "clean": "rimraf dist/{css/*,js/*,images/*}",
@@ -49,6 +49,6 @@
     "stylelint": "^9.4.0",
     "uglify-es": "^3.3.10"
   },
-  "homepage": "https://bitbucket.org/pasqualevitiello/solid#readme",
+  "homepage": "https://bitbucket.org/pasqualevitiello/switch#readme",
   "main": ".eslintrc.js"
 }

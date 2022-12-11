@@ -1,54 +1,68 @@
 .cta {
-	text-align: center;
+	position: relative;
 
 	.section-inner {
-		padding: 48px 16px;
+		padding-bottom: 64px;
 	}
 
-	.section-title {
-		margin-bottom: 40px;
-	}
-}
-
-.cta-inner {
-	position: relative;
-	background: color(bg, 1);
-	overflow: hidden;
+    .section-paragraph {
+        margin-bottom: 32px;
+    }
 
 	&::before {
 		content: '';
 		position: absolute;
-		right: 98px;
-		top: -117px;
-		width: 160px;
-		height: 187px;
-		background-image: url('../images/cta-illustration.svg');
-		background-repeat: no-repeat;
-	}
+		bottom: -32px;
+		left: calc(50% - 720px);
+		height: 263px;
+		width: 1440px;
+		background-image: url('../images/cta-illustration-light.svg');
 
-	> * {
-		position: relative; /* To display elements above hero illustrations */
+		.lights-off & {
+			background-image: url('../images/cta-illustration-dark.svg');
+		}
 	}
 }
 
-@include media( '>medium') {
+.cta-cta {
+	max-width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
 
-	.cta {
-		text-align: left;
+@include media( '<medium' ) {
 
-		.section-inner {
-			padding: 64px 32px;
-		}
+	.cta-cta {
 
-		.section-title {
-			margin-bottom: 0;
-			padding-right: 24px;
+		.button {
+			display: flex;
 		}
 	}
+}
 
-	.cta-inner {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+@include media( '>medium' ) {
+
+    .cta {
+
+		.section-inner {
+			padding-bottom: 128px;
+		}
+
+        .section-paragraph {
+            margin-bottom: 40px;
+            padding-left: 72px;
+            padding-right: 72px;
+        }
+
+		&::before {
+			bottom: 0;
+		}
+    }
+
+	.cta-cta {
+
+		.button {
+			min-width: 170px;
+		}
 	}
 }
