@@ -9,7 +9,7 @@ html {
 }
 
 body {
-	background: color(bg, 2); /* Fallback for when there is no custom background color defined. */
+	background: color(bg, 1); /* Fallback for when there is no custom background color defined. */
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
 }

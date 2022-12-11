@@ -1,4 +1,4 @@
-# Solid
+# Switch
 
 A landing page template.
 

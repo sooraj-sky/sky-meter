@@ -10,15 +10,15 @@
     width: 100%;
 
     &::placeholder {
-        color: color(typography, 3);
+        color: color(typography, 2);
     }
 
     &::-ms-input-placeholder {
-        color: color(typography, 3);
+        color: color(typography, 2);
     }
 
     &:-ms-input-placeholder {
-        color: color(typography, 3);
+        color: color(typography, 2);
     }
 
     &:hover {
@@ -77,6 +77,62 @@
             margin-bottom: 8px;
         }
     }
+}
+
+.switch[type="checkbox"] {
+	outline: 0;
+	user-select: none;
+	position: absolute;
+	opacity: 0;
+
+	+ label {
+		display: inline-flex;
+	    position: relative;
+		line-height: 36px;
+	    padding-left: 78px;
+		user-select: none;
+	    cursor: pointer;
+
+		&::before,
+		&::after {
+			content: '';
+			position: absolute;
+			display: block;
+		}
+
+		&::before {
+			top: 0;
+			left: 0;
+			width: 64px;
+			height: 36px;
+			border-radius: 18px;
+			background: color(bg, 3);
+		}
+
+		&::after {
+			top: 6px;
+			left: 6px;
+			width: 24px;
+			height: 24px;
+			border-radius: 12px;
+			background: color(bg, 1);
+			transition: all .15s ease-out;
+		}
+	}
+
+	&:checked {
+
+		+ label {
+
+			&::before {
+				background: color(primary, 1);
+			}
+
+			&::after {
+				left: 34px;
+			}
+		}
+	}
 }
 
 @include media( '>medium' ) {
