@@ -6,11 +6,49 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sky-meter/models"
+	models "sky-meter/models"
+	"bytes"
+	"html/template"
+	gomail "gopkg.in/gomail.v2"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
 )
+
+func SendMail(i models.SmtpErr) {
+
+    emailPass := os.Getenv("emailpass")
+	if emailPass == "" {
+		log.Fatal("Please specify the emailpass as environment variable, e.g. env emailpass=your-pass go run http-server.go")
+	}
+
+	t := template.New("error.html")
+
+	var err error
+	t, err = t.ParseFiles("templates/error.html")
+	if err != nil {
+		log.Println(err)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, i); err != nil {
+		log.Println(err)
+	}
+
+	result := tpl.String()
+	m := gomail.NewMessage()
+	m.SetHeader("From", i.Mailfrom)
+	m.SetHeader("To", i.Mailto)
+	m.SetHeader("Subject", i.Subject)
+	m.SetBody("text/html", result)
+
+	d := gomail.NewDialer(i.Mailserver, i.Mailport, i.Mailfrom, emailPass)
+
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
+	}
+}
 
 type error interface {
 	Error() string
@@ -88,3 +126,5 @@ func CheckAlertStatus(alertRequestId string) string {
 	}
 	return getResult.Status
 }
+
+
