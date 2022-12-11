@@ -1,14 +1,15 @@
 package skyalerts
 
 import (
+	"bytes"
 	"encoding/json"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	models "sky-meter/models"
-	"bytes"
-	"html/template"
+
+	models "github.com/sooraj-sky/sky-meter/models"
 	gomail "gopkg.in/gomail.v2"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
@@ -17,7 +18,7 @@ import (
 
 func SendMail(i models.SmtpErr) {
 
-    emailPass := os.Getenv("emailpass")
+	emailPass := os.Getenv("emailpass")
 	if emailPass == "" {
 		log.Fatal("Please specify the emailpass as environment variable, e.g. env emailpass=your-pass go run http-server.go")
 	}
@@ -126,5 +127,3 @@ func CheckAlertStatus(alertRequestId string) string {
 	}
 	return getResult.Status
 }
-
-

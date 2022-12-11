@@ -2,10 +2,11 @@ package main
 
 import (
 	"log"
-	dbops "sky-meter/packages/dbops"
-	skymeter "sky-meter/packages/httpserver"
-	jsonops "sky-meter/packages/jsonops"
-	sentry "sky-meter/packages/logger"
+
+	dbops "github.com/sooraj-sky/sky-meter/packages/dbops"
+	skymeter "github.com/sooraj-sky/sky-meter/packages/httpserver"
+	jsonops "github.com/sooraj-sky/sky-meter/packages/jsonops"
+	sentry "github.com/sooraj-sky/sky-meter/packages/logger"
 
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"

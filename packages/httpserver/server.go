@@ -1,11 +1,12 @@
 package htttpserver
 
 import (
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
-	api "sky-meter/packages/api"
+
+	"github.com/gorilla/mux"
+	api "github.com/sooraj-sky/sky-meter/packages/api"
 )
 
 func InitServer() {

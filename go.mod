@@ -1,4 +1,4 @@
-module sky-meter
+module github.com/sooraj-sky/sky-meter
 
 go 1.18
 
@@ -7,6 +7,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gorm.io/datatypes v1.0.7
 	gorm.io/driver/postgres v1.4.5
 	gorm.io/gorm v1.24.1
@@ -33,7 +34,5 @@ require (
 	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
-	gorm.io/datatypes v1.0.7 // indirect
 	gorm.io/driver/mysql v1.3.2 // indirect
 )
