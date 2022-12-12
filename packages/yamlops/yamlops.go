@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	models "sky-meter/models"
+	"strconv"
 )
 
 func InputYml() models.UserInput {
@@ -23,9 +24,10 @@ func InputYml() models.UserInput {
 	if err != nil {
 		log.Println(err)
 	}
+
 	os.Setenv("emailFrom", config.Email[0].Sender)
 	os.Setenv("emailServer", config.Email[0].Server)
-	os.Setenv("EmailPort", string(config.Email[0].Port))
+	os.Setenv("EmailPort", strconv.Itoa(config.Email[0].Port))
 
 	return config
 }

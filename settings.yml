@@ -33,3 +33,10 @@ domains:
   skip_ssl: false
   frequency: 60
   group: prod
+
+- name: https://githcccubs.com
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: prod

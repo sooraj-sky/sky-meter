@@ -45,8 +45,8 @@ func SendMail(i models.SmtpErr) {
 		m.SetHeader("To", i.Mailto[k])
 		m.SetHeader("Subject", i.Subject)
 		m.SetBody("text/html", result)
-	
 		intPort, _ := strconv.Atoi(os.Getenv("EmailPort"))
+
 	
 		d := gomail.NewDialer(os.Getenv("emailServer"), intPort, os.Getenv("emailFrom"), emailPass)
 	
