@@ -6,6 +6,7 @@ import (
 	models "sky-meter/models"
 	skyalerts "sky-meter/packages/alerts"
 	httpreponser "sky-meter/packages/httpres"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -18,24 +19,38 @@ func InitialMigration(db *gorm.DB) {
 	db.AutoMigrate(&models.AllEndpoints{})
 	db.AutoMigrate(&models.HttpOutput{})
 	db.AutoMigrate(&models.OpsgenieAlertData{})
+	db.AutoMigrate(&models.AlertGroups{})
 }
 
-func InsertUrlsToDb(db *gorm.DB, endpoints models.JsonInput) {
+func InsertUrlsToDb(db *gorm.DB, endpoints models.UserInput) {
 	var urlCheck models.AllEndpoints
 	var urlsId models.AllEndpoints
-	for i := 0; i < len(endpoints); i++ {
-		db.Where("URL=?", endpoints[i].URL).Find(&urlCheck)
-		if urlCheck.CreatedAt == 0 && urlCheck.URL != endpoints[i].URL {
-			db.Create(&models.AllEndpoints{URL: endpoints[i].URL, Timeout: endpoints[i].Timeout, SkipSsl: endpoints[i].SkipSsl, Frequency: endpoints[i].Frequency, Group: endpoints[i].Group, Active: true})
+	var Groups models.AlertGroups
+	for i := 0; i < len(endpoints.Domains); i++ {
+		db.Where("URL=?", endpoints.Domains[i].Name).Find(&urlCheck)
+		if urlCheck.CreatedAt == 0 && urlCheck.URL != endpoints.Domains[i].Name {
+			db.Create(&models.AllEndpoints{URL: endpoints.Domains[i].Name, Timeout: endpoints.Domains[i].Timeout, SkipSsl: endpoints.Domains[i].SkipSsl, Frequency: endpoints.Domains[i].Frequency, Group: endpoints.Domains[i].Group, Active: true})
 		}
 		urlCheck = urlsId
 	}
+
+	for i := range endpoints.Groups {
+		db.Where("NAME=?", endpoints.Groups[i].Name).Find(&Groups)
+		for k := range endpoints.Groups[i].Emails {
+			if Groups.CreatedAt == 0 && Groups.Email != endpoints.Groups[1].Emails[k] {
+				db.Create(&models.AlertGroups{Name: endpoints.Groups[i].Name, Email: endpoints.Groups[1].Emails[k]})
+			}
+		}
+
+	}
+
 }
 
 func GetUrlFrequency(db *gorm.DB) {
 	var urlsToCheck []models.AllEndpoints
 	var urlsId []models.AllEndpoints
 	var alertStatus models.OpsgenieAlertData
+	var GroupsEmailIds models.AlertGroups
 
 	db.Find(&urlsToCheck)
 	for i := 0; i < len(urlsToCheck); i++ {
@@ -46,23 +61,24 @@ func GetUrlFrequency(db *gorm.DB) {
 				httpOutput, HttpStatusCode, err := httpreponser.CallEndpoint(urlsToCheck[i].URL, urlsToCheck[i].Timeout, urlsToCheck[i].SkipSsl)
 				if err != nil {
 					db.First(&alertStatus, "url = ?", urlsToCheck[i].URL)
+					db.Where("Name=?",  urlsToCheck[i].Group).Find(&GroupsEmailIds)
 
 					if alertStatus.URL == urlsToCheck[i].URL {
+						dt := time.Now()
 						AlertStatus := skyalerts.CheckAlertStatus(alertStatus.RequestId)
 						if (AlertStatus == "closed") || (alertStatus.Error != err.Error()) {
-						//	alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
-						//	db.Model(&alertStatus).Where("url = ?", urlsToCheck[i].URL).Update("request_id", alertReqId)
-							d := models.SmtpErr{"skywalks.in", "webiste is down again", "22-2-132", "unable to connect", 22, "onlyworkofficial@gmail.com", "linux.sooraj@gmail.com", "smtp.gmail.com", 587}
-
+								alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
+								db.Model(&alertStatus).Where("url = ?", urlsToCheck[i].URL).Update("request_id", alertReqId)
+							d := models.SmtpErr{urlsToCheck[i].URL, "webiste is again", dt, err.Error(), []string{GroupsEmailIds.Email}}
 							skyalerts.SendMail(d)
 						}
 
 					} else {
-					//	alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
-					//	db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Error: err.Error(), Active: true})
-					//	db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
-						d := models.SmtpErr{"skywalks.in", "webiste is down again", "22-2-132", "unable to connect", 22, "onlyworkofficial@gmail.com", "linux.sooraj@gmail.com", "smtp.gmail.com", 587}
-
+						dts := time.Now()
+							alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
+							db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Error: err.Error(), Active: true})
+							db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
+						d := models.SmtpErr{urlsToCheck[i].URL, "webiste is again", dts, err.Error(), []string{GroupsEmailIds.Email}}
 						skyalerts.SendMail(d)
 					}
 				} else {
@@ -78,15 +94,15 @@ func GetUrlFrequency(db *gorm.DB) {
 	}
 }
 
-func RemoveOldEntry(db *gorm.DB, endpoints models.JsonInput) {
+func RemoveOldEntry(db *gorm.DB, endpoints models.UserInput) {
 	var urlCheck []models.AllEndpoints
 	db.Find(&urlCheck)
 	var urlsId models.AllEndpoints
 
 	for i := 0; i < len(urlCheck); i++ {
 		var findCount int
-		for m := range endpoints {
-			if endpoints[m].URL == urlCheck[i].URL {
+		for m := range endpoints.Domains {
+			if endpoints.Domains[m].Name == urlCheck[i].URL {
 				log.Println("found URL", urlCheck[i].URL)
 				if urlCheck[i].Active != true {
 					db.Model(&urlsId).Where("url = ?", urlCheck[i].URL).Update("Active", true)
@@ -95,7 +111,7 @@ func RemoveOldEntry(db *gorm.DB, endpoints models.JsonInput) {
 				findCount = findCount + 1
 			}
 		}
-		if findCount >= len(endpoints) {
+		if findCount >= len(endpoints.Domains) {
 			log.Println(urlCheck[i].URL, "Not found in input.json, removing the check")
 			db.Model(&urlsId).Where("url = ?", urlCheck[i].URL).Update("Active", false)
 		}
