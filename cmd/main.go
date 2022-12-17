@@ -6,7 +6,6 @@ import (
 	skymeter "sky-meter/packages/httpserver"
 	sentry "sky-meter/packages/logger"
 	yamlops "sky-meter/packages/yamlops"
-
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

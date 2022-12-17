@@ -70,14 +70,24 @@ func GetUrlFrequency(db *gorm.DB) {
 						dt := time.Now()
 						AlertStatus := skyalerts.CheckAlertStatus(alertStatus.RequestId)
 						if (AlertStatus == "closed") || (alertStatus.Error != err.Error()) {
+								alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
+								db.Model(&alertStatus).Where("url = ?", urlsToCheck[i].URL).Update("request_id", alertReqId)
 							d := models.SmtpErr{urlsToCheck[i].URL, "webiste is Down", dt, err.Error(), []string{GroupsEmailIds.Email}}
+
+
 							skyalerts.SendMail(d)
 						}
                         GroupsEmailIds = Empty
 					} else {
+
 						dts := time.Now()
 							db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
 						d := models.SmtpErr{urlsToCheck[i].URL, "webiste is Down", dts, err.Error(), []string{GroupsEmailIds.Email}}
+
+							alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
+							db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Error: err.Error(), Active: true})
+							db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
+
 						skyalerts.SendMail(d)
 					}
 

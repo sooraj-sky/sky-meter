@@ -1,4 +1,4 @@
-module sky-meter
+module github.com/sooraj-sky/sky-meter
 
 go 1.18
 
