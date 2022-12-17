@@ -17,7 +17,7 @@ RUN go mod download
 
 COPY . .
 WORKDIR /go/src/app/cmd
-RUN go build -o /server
+RUN go build -o /main
 
 EXPOSE 8080
 
@@ -25,7 +25,7 @@ CMD [ "/server" ]
 
 FROM alpine
 
-COPY --from=builder /server .
+COPY --from=builder /main .
 ARG USER=skyuser
 ENV HOME /home/$USER
 
@@ -42,4 +42,4 @@ USER skyuser
 
 EXPOSE 8080
 
-CMD ["/server"]
+CMD ["/main"]
