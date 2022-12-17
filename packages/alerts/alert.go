@@ -3,13 +3,13 @@ package skyalerts
 import (
 	"bytes"
 	"encoding/json"
+	models "github.com/sooraj-sky/sky-meter/models"
 	gomail "gopkg.in/gomail.v2"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	models "sky-meter/models"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
@@ -47,12 +47,11 @@ func SendMail(i models.SmtpErr) {
 		m.SetBody("text/html", result)
 		intPort, _ := strconv.Atoi(os.Getenv("EmailPort"))
 
-	
 		d := gomail.NewDialer(os.Getenv("emailServer"), intPort, os.Getenv("emailFrom"), emailPass)
-	
+
 		if err := d.DialAndSend(m); err != nil {
 			log.Println(err)
-			
+
 		}
 
 	}

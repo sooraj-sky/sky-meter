@@ -1,14 +1,14 @@
 package main
 
 import (
-	"log"
-	dbops "sky-meter/packages/dbops"
-	skymeter "sky-meter/packages/httpserver"
-	sentry "sky-meter/packages/logger"
-	yamlops "sky-meter/packages/yamlops"
 	"github.com/jasonlvhit/gocron"
+	dbops "github.com/sooraj-sky/sky-meter/packages/dbops"
+	skymeter "github.com/sooraj-sky/sky-meter/packages/httpserver"
+	sentry "github.com/sooraj-sky/sky-meter/packages/logger"
+	yamlops "github.com/sooraj-sky/sky-meter/packages/yamlops"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 )
 
 func main() {
