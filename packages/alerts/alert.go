@@ -1,16 +1,62 @@
 package skyalerts
 
 import (
+	"bytes"
 	"encoding/json"
+	gomail "gopkg.in/gomail.v2"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"sky-meter/models"
+	models "sky-meter/models"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
+	"strconv"
 )
+
+func SendMail(i models.SmtpErr) {
+
+	emailPass := os.Getenv("emailpass")
+	if emailPass == "" {
+		log.Fatal("Please specify the emailpass as environment variable, e.g. env emailpass=your-pass go run http-server.go")
+	}
+
+	t := template.New("error.html")
+
+	var err error
+	t, err = t.ParseFiles("templates/error.html")
+	if err != nil {
+		log.Println(err)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, i); err != nil {
+		log.Println(err)
+	}
+
+	log.Println("emails areee", i.Mailto)
+	for k := range i.Mailto {
+
+		result := tpl.String()
+		m := gomail.NewMessage()
+		m.SetHeader("From", os.Getenv("emailFrom"))
+		m.SetHeader("To", i.Mailto[k])
+		m.SetHeader("Subject", i.Subject)
+		m.SetBody("text/html", result)
+		intPort, _ := strconv.Atoi(os.Getenv("EmailPort"))
+
+	
+		d := gomail.NewDialer(os.Getenv("emailServer"), intPort, os.Getenv("emailFrom"), emailPass)
+	
+		if err := d.DialAndSend(m); err != nil {
+			log.Println(err)
+			
+		}
+
+	}
+}
 
 type error interface {
 	Error() string

@@ -6,8 +6,9 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptrace"
-	models "sky-meter/models"
 	"time"
+
+	models "github.com/sooraj-sky/sky-meter/models"
 )
 
 func GetHttpdata(url string, timeout time.Duration, SkipSsl bool) (httpdata []byte, httpstatuscode int, errs error) {

@@ -1,0 +1,42 @@
+opegenie:
+- enabled: false
+email:
+- enabled: true
+  server: smtp.gmail.com
+  port: 587
+  sender: linux.sooraj@gmail.com
+groups:
+- name: prod
+  emails:
+     - onlyworkofficial@gmail.com
+     - ops@skywalks.in
+- name: dev
+  emails:
+     - onlyworkofficial@gmail.com
+     - ops@skywalks.in
+domains:
+- name: https://skywalks.in
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 10
+  group: dev
+- name: https://sky-meter.skywalks.in
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: dev
+- name: https://github.com
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: prod
+
+- name: https://githcccubs.com
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: prod

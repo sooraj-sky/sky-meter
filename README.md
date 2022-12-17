@@ -1,8 +1,16 @@
 # sky-meter
+[![CodeQL](https://github.com/sooraj-sky/sky-meter/actions/workflows/codeql.yml/badge.svg)](https://github.com/sooraj-sky/sky-meter/actions/workflows/codeql.yml)
+[![Dependency Review](https://github.com/sooraj-sky/sky-meter/actions/workflows/dependency-review.yml/badge.svg?branch=main)](https://github.com/sooraj-sky/sky-meter/actions/workflows/dependency-review.yml)
 
-sky-meter is an synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts. Here we are using the go httptrace library.  
-Currenly we have addded Database support. The endpoints and http output are now bing saved in Database. We also have a sentry integration to catch the runtime errors.
+Sky-meter is a synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts. Here we are using the go httptrace library.  
+Currenly we have addded Database support. The endpoints and http output are now being saved in Database. We also have a sentry integration to catch the runtime errors.
  Development is in progress
+ ### [Visit Our Website](https://sky-meter.skywalks.in)   
+### [Visit pkg.go.dev](https://pkg.go.dev/github.com/sooraj-sky/sky-meter)
+
+ ## Alerting
+ We have integrated SMTP and Opsgenie, more integrations are in pipeline
+ Currently the project is under developmet. You may have to experience some glitches at this moment.
 
 ## Tested Environments
 GO version: 1.18  
@@ -75,6 +83,10 @@ Export opsgenieSecret
 ```sh
 $ export opsgeniesecret="your-opsgenie-api-keyhere"
 ```
+Export email passsword
+```sh
+export emailpass="your-email-pass-here"
+```
 Run the project
 ```sh    
 $ go run cmd/main.go  
@@ -82,9 +94,10 @@ $ go run cmd/main.go
 
 ## CI
 
-we are sing concourse CI for  Main Branch
+we are using concourse CI for  Main Branch
 
 For release branch we have Github Actions
 
-install : https://concourse-ci.org/install.html
+
+
 
