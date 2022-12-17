@@ -3,17 +3,17 @@ package skyalerts
 import (
 	"bytes"
 	"encoding/json"
+	gomail "gopkg.in/gomail.v2"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-
-	models "github.com/sooraj-sky/sky-meter/models"
-	gomail "gopkg.in/gomail.v2"
+	models "sky-meter/models"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
+	"strconv"
 )
 
 func SendMail(i models.SmtpErr) {
@@ -36,18 +36,25 @@ func SendMail(i models.SmtpErr) {
 		log.Println(err)
 	}
 
-	result := tpl.String()
-	m := gomail.NewMessage()
-	m.SetHeader("From", i.Mailfrom)
-	m.SetHeader("To", i.Mailto)
-	m.SetHeader("Subject", i.Subject)
-	m.SetBody("text/html", result)
+	log.Println("emails areee", i.Mailto)
+	for k := range i.Mailto {
 
-	d := gomail.NewDialer(i.Mailserver, i.Mailport, i.Mailfrom, emailPass)
+		result := tpl.String()
+		m := gomail.NewMessage()
+		m.SetHeader("From", os.Getenv("emailFrom"))
+		m.SetHeader("To", i.Mailto[k])
+		m.SetHeader("Subject", i.Subject)
+		m.SetBody("text/html", result)
+		intPort, _ := strconv.Atoi(os.Getenv("EmailPort"))
 
-	// Send the email to Bob, Cora and Dan.
-	if err := d.DialAndSend(m); err != nil {
-		panic(err)
+	
+		d := gomail.NewDialer(os.Getenv("emailServer"), intPort, os.Getenv("emailFrom"), emailPass)
+	
+		if err := d.DialAndSend(m); err != nil {
+			log.Println(err)
+			
+		}
+
 	}
 }
 

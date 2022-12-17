@@ -2,12 +2,10 @@ package main
 
 import (
 	"log"
-
-	dbops "github.com/sooraj-sky/sky-meter/packages/dbops"
-	skymeter "github.com/sooraj-sky/sky-meter/packages/httpserver"
-	jsonops "github.com/sooraj-sky/sky-meter/packages/jsonops"
-	sentry "github.com/sooraj-sky/sky-meter/packages/logger"
-
+	dbops "sky-meter/packages/dbops"
+	skymeter "sky-meter/packages/httpserver"
+	sentry "sky-meter/packages/logger"
+	yamlops "sky-meter/packages/yamlops"
 	"github.com/jasonlvhit/gocron"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -25,7 +23,7 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	endpoints := jsonops.InputJson()
+	endpoints := yamlops.InputYml()
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
 	dbops.RemoveOldEntry(db, endpoints)

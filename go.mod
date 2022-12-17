@@ -8,6 +8,7 @@ require (
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/datatypes v1.0.7
 	gorm.io/driver/postgres v1.4.5
 	gorm.io/gorm v1.24.1

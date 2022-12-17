@@ -89,13 +89,40 @@ type OpsGenieAlertStatus struct {
 }
 
 type SmtpErr struct {
-	URL string
-    Subject string
-    Downtime string
-    Reason string
-    Count int
-    Mailto string
-    Mailfrom string
-    Mailserver string
-    Mailport int
+	URL      string
+	Subject  string
+	Downtime time.Time
+	Reason   string
+	Mailto   [] string
+}
+
+type UserInput struct {
+	Opegenie []struct {
+		Enabled bool
+	}
+	Email []struct {
+		Enabled bool
+		Server  string
+		Port    int
+		Sender  string
+	}
+	Groups []struct {
+		Name   string
+		Emails []string
+	}
+	Domains []struct {
+		Name      string
+		Enabled   bool
+		Timeout   int
+		SkipSsl   bool
+		Frequency uint64
+		Group     string
+	}
+}
+
+type AlertGroups struct {
+	ID        uint  `gorm:"primaryKey"`
+	CreatedAt int64 `gorm:"autoUpdateTime"`
+	Name      string
+	Email     string
 }
