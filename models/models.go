@@ -93,7 +93,7 @@ type SmtpErr struct {
 	Subject  string
 	Downtime time.Time
 	Reason   string
-	Mailto   [] string
+	Mailto   []string
 }
 
 type UserInput struct {
