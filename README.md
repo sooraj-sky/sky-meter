@@ -33,30 +33,55 @@ Currenly we have two environment variables.
 - You can export the **PORT** variable to set the http port of the server
 
 ## Add URLs to check
-To add a URL to minitoring is pertty simple. Create **input.json** to add your endpoints to monitor. See an example of **input.json** below  
+To add a URL to minitoring is pertty simple. Create **settings.yml** to add your endpoints to monitor. See an example of **settings.yml** below  
 ```sh
-[
-    {
-      "url": "https://github.com",
-      "timeout": 1200,
-      "skip_ssl": false,
-      "frequency" : 5,
-      "group": "prod"
-    },
-        {
-      "url": "https://stackoverflow.com",
-      "timeout": 1200,
-      "skip_ssl": false,
-      "frequency" : 30,
-      "group": "prod"
-    }
-]
+opegenie:
+- enabled: false
+email:
+- enabled: true
+  server: smtp.gmail.com
+  port: 587
+  sender: testemail@gmail.com
+groups:
+- name: prod
+  emails:
+     - reviceremail@gmail.com
+     - reciver@yahoo.com
+- name: dev
+  emails:
+     - reviceremail@gmail.com
+     - reciver@yahoo.com
+domains:
+- name: https://skywalks.in
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 10
+  group: dev
+- name: https://sky-meter.skywalks.in
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: dev
+- name: https://github.com
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: prod
+
+- name: https://githcccubs.com
+  enabled: true
+  timeout: 10
+  skip_ssl: false
+  frequency: 60
+  group: prod
 ```
-> _url_ : url to monitor (string)   
 > _timeout_ : Timeout of request in Millisecond (int)  
 > _skip_ssl_ : set flase if you want to skip the ssl verification (bool)  
 > _frequency_ : frequency of health check in secont (int)  
-> _group_ : Add group properties (string)
+> _group_ : Group settings
 
 ## Run the Code
 Clone the code
