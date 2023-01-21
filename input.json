@@ -1,37 +1,44 @@
 [
   { 
      "url": "https://bing.com",
-      "timeout": 1000,
+      "timeout": 2000,
       "skip_ssl": false,
       "frequency" : 400,
       "group": "prod"
     },
     {
       "url": "https://github.com",
-      "timeout": 1000,
+      "timeout": 3000,
       "skip_ssl": false,
       "frequency" : 5,
       "group": "prod"
     },
         {
       "url": "https://stackoverflow.com",
-      "timeout": 1000,
+      "timeout": 2000,
       "skip_ssl": false,
       "frequency" : 300,
       "group": "prod"
     },
     {
       "url": "https://edistrict.kerala.gov.in",
-      "timeout": 1000,
+      "timeout": 2000,
       "skip_ssl": false,
       "frequency" : 60,
       "group": "prod"
     },
     {
       "url": "http://www.tanscst.nic.in",
-      "timeout": 1000,
+      "timeout": 2000,
       "skip_ssl": false,
       "frequency" : 100,
+      "group": "prod"
+    },
+    {
+      "url": "http://www.tanssscst.nic.issn",
+      "timeout": 2000,
+      "skip_ssl": false,
+      "frequency" : 10,
       "group": "prod"
     }
 ]
