@@ -9,13 +9,18 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"os"
 )
 
 func main() {
 	log.Println("Launching sky-meter")
 	sentry.SentryInit()
+	dbconnect := os.Getenv("dbconnect")
+	if opsgenieSecret == "" {
+		log.Fatal("Please specify the opsgeniesecret as environment variable, e.g. sooraj@sky:~/go/src/sky-meter$ export dbconnect=host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable")
+	}
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable",
+		DSN:                  dbconnect,
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
 
 	}), &gorm.Config{})
