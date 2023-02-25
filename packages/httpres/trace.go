@@ -9,6 +9,7 @@ import (
 	"time"
 
 	models "github.com/sooraj-sky/sky-meter/models"
+	skydns "github.com/sooraj-sky/sky-meter/packages/skydns"
 )
 
 func GetHttpdata(url string, timeout time.Duration, SkipSsl bool) (httpdata []byte, httpstatuscode int, errs error) {
@@ -57,6 +58,10 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 	d := &models.Debug{}
 
 	t := &httptrace.ClientTrace{
+		//DNS settings
+		dnsServer := "8.8.8.8" // Replace with your desired DNS server IP address
+		skydns.resolver := customResolver(dnsServer)
+
 		DNSStart: func(info httptrace.DNSStartInfo) {
 			t := time.Now().UTC().String()
 			//log.Println(t, "dns start")
