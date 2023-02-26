@@ -25,23 +25,29 @@ See Docker Hub Image
 https://hub.docker.com/r/soorajsky/sky-meter
 
 ## Environment variables
-Currenly we have two environment variables.  
-1. sentry_dsn
-2. PORT
+| Variable       | Type    | Example         |
+|----------------|---------|-----------------|
+| DnsServer      | string  | 8.8.8.8         |
+| Port           | string  | 8000            |
+| EmailPass      | string  | youremailpass   |
+| EmailFrom      | string  | from@gmail.com  |
+| EmailPort      | string  | 583             |
+| EmailServer    | string  | smtp.gmail.com  |
+| OpsgenieSecret | string  | examplesecret   |
+| SentryDsn      | string  | exapledsnvalue  |
+| Mode           | string  | prod            |
+| DbUrl          | string  | host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable             |
 
-- You can create sentry project and imput the **sentry_dsn** as env variable.  
-- You can export the **PORT** variable to set the http port of the server
+
+
 
 ## Add URLs to check
 To add a URL to minitoring is pertty simple. Create **settings.yml** to add your endpoints to monitor. See an example of **settings.yml** below  
 ```sh
 opegenie:
-- enabled: false
+  enabled: false
 email:
-- enabled: true
-  server: smtp.gmail.com
-  port: 587
-  sender: testemail@gmail.com
+  enabled: true
 groups:
 - name: prod
   emails:
@@ -89,28 +95,29 @@ Clone the code
 $ git clone https://github.com/sooraj-sky/sky-meter.git
 $ cd sky-meter
 ```  
-Run the postgres docker container
+Run the postgres docker container (skip this step if you already have a database)
 ```sh  
 $ docker-compose up -d
 ```  
-Added Env Option: You can enable sentry by adding
+Export ENV variables (Sentry will work only in dev mode)    
+If Email is disbled on **settings.yml** the following variables are not needed.
+1. EmailPass
+2. EmailFrom
+3. EmailPort
+4. EmailServer
 
-Export sentry dsn  
+**SentryDsn** is only needed when **Mode=dev**
+
 ```sh
-$ export mode="dev"
-$ export sentry_dsn="<yourDsnHere>"
-```  
-Export the port
-```sh
-$ export PORT=8080
-```
-Export opsgenieSecret
-```sh
-$ export opsgeniesecret="your-opsgenie-api-keyhere"
-```
-Export email passsword
-```sh
-export emailpass="your-email-pass-here"
+$ export DnsServer="8.8.8.8" #requied  
+$ export DbUrl="host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable"  #requied          
+$ export EmailPass="your-pass-here" #requied when Email is Enabled  
+$ export EmailFrom="youremail@server.com" #requied when Email is Enabled     
+$ export EmailPort="587" #requied when Email is Enabled     
+$ export EmailServer="smtp.server-address-here.com" #requied when Email is Enabled   
+$ export OpsgenieSecret="your-opsgenie-key-here" #requied when Opsgenie is Enabled on settings.yml
+$ export Mode="dev"  
+$ export SentryDsn="your-DSn-key-here" #requied when Mode="dev"           
 ```
 Run the project
 ```sh    

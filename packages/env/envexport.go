@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	models "sky-meter/models"
+	yamlops "sky-meter/packages/yamlops"
 )
 
 // To add a new env variable, add that variable to models.AllEnvs struct.
@@ -34,6 +35,18 @@ func InitEnv() {
 	envNames := GetEnvStructKeys()
 
 	var envStatus []string
+
+	endpoints := yamlops.InputYml()
+
+	if endpoints.Opegenie.Enabled != true {
+		os.Setenv("OpsgenieSecret", "tmp-opsgenie-key")
+	}
+	if endpoints.Email.Enabled != true {
+		os.Setenv("EmailPass", "tmp-key")
+		os.Setenv("EmailFrom", "tmp-key")
+		os.Setenv("EmailPort", "tmp-key")
+		os.Setenv("EmailServer", "tmp-key")
+	}
 
 	for i := range envNames {
 		envValue := os.Getenv(envNames[i])
