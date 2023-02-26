@@ -127,3 +127,16 @@ type AlertGroups struct {
 	Name      string
 	Email     string
 }
+
+type AllEnvs struct {
+	DnsServer      string
+	Port           string
+	EmailPass      string
+	EmailFrom      string
+	EmailPort      string
+	EmailServer    string
+	OpsgenieSecret string
+	SentryDsn      string
+	Mode           string
+	DbUrl          string
+}

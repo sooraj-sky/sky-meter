@@ -5,25 +5,22 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"os"
 	dbops "sky-meter/packages/dbops"
+	skyenv "sky-meter/packages/env"
 	skymeter "sky-meter/packages/httpserver"
 	sentry "sky-meter/packages/logger"
 	yamlops "sky-meter/packages/yamlops"
 )
 
+func init() {
+	skyenv.InitEnv()
+}
+
 func main() {
 	log.Println("Launching sky-meter")
 	sentry.SentryInit()
-	dbconnect := os.Getenv("dbconnect")
-	opsgenieSecret := os.Getenv("opsgeniesecret")
-	if opsgenieSecret == "" {
-		log.Fatal("Please specify the opsgeniesecret as environment variable, e.g.  export dbconnect=host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable")
-	}
-
-	if opsgenieSecret == "" {
-		log.Fatal("Please specify the opsgeniesecret as environment variable, e.g.  export opsgeniesecret=<your-value-here>")
-	}
+	allEnv := skyenv.GetEnv()
+	dbconnect := allEnv.DbUrl
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dbconnect,
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage

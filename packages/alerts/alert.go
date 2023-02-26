@@ -8,8 +8,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	models "sky-meter/models"
+	skyenv "sky-meter/packages/env"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
@@ -18,12 +18,8 @@ import (
 
 func SendMail(i models.SmtpErr) {
 
-	log.Println(i.Mailto, "mailto")
-
-	emailPass := os.Getenv("emailpass")
-	if emailPass == "" {
-		log.Fatal("Please specify the emailpass as environment variable, e.g. env emailpass=your-pass go run http-server.go")
-	}
+	allEnv := skyenv.GetEnv()
+	emailPass := allEnv.EmailPass
 
 	t := template.New("error.html")
 
@@ -38,18 +34,17 @@ func SendMail(i models.SmtpErr) {
 		log.Println(err)
 	}
 
-	log.Println("emails areee", i.Mailto)
 	for k := range i.Mailto {
 
 		result := tpl.String()
 		m := gomail.NewMessage()
-		m.SetHeader("From", os.Getenv("emailFrom"))
+		m.SetHeader("From", allEnv.EmailFrom)
 		m.SetHeader("To", i.Mailto[k])
 		m.SetHeader("Subject", i.Subject)
 		m.SetBody("text/html", result)
-		intPort, _ := strconv.Atoi(os.Getenv("EmailPort"))
+		intPort, _ := strconv.Atoi(allEnv.EmailPort)
 
-		d := gomail.NewDialer(os.Getenv("emailServer"), intPort, os.Getenv("emailFrom"), emailPass)
+		d := gomail.NewDialer(allEnv.EmailServer, intPort, allEnv.EmailFrom, emailPass)
 
 		if err := d.DialAndSend(m); err != nil {
 			log.Println(err)
@@ -65,10 +60,8 @@ type error interface {
 
 func OpsgenieCreateAlert(errorurl string, description error, group string) string {
 	downMessege := "Alert Endpint " + errorurl + " is Down"
-	opsgenieSecret := os.Getenv("opsgeniesecret")
-	if opsgenieSecret == "" {
-		log.Fatal("Please specify the opsgeniesecret as environment variable, e.g. export opsgeniesecret=")
-	}
+	allEnv := skyenv.GetEnv()
+	opsgenieSecret := allEnv.OpsgenieSecret
 
 	alertClient, err := alert.NewClient(&client.Config{
 		ApiKey: opsgenieSecret,
@@ -95,11 +88,9 @@ func OpsgenieCreateAlert(errorurl string, description error, group string) strin
 func CheckAlertStatus(alertRequestId string) string {
 	apiclient := &http.Client{}
 	url := "https://api.opsgenie.com/v2/alerts/requests/" + alertRequestId + "?identifierType=id"
-	opsgenieSecret := os.Getenv("opsgeniesecret")
+	allEnv := skyenv.GetEnv()
+	opsgenieSecret := allEnv.OpsgenieSecret
 	opsgenieSecretString := "GenieKey " + opsgenieSecret
-	if opsgenieSecret == "" {
-		log.Fatal("Please specify the opsgeniesecret as environment variable, e.g. export opsgeniesecret=")
-	}
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
