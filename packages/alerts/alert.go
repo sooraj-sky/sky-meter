@@ -3,13 +3,13 @@ package skyalerts
 import (
 	"bytes"
 	"encoding/json"
-	models "github.com/sooraj-sky/sky-meter/models"
 	gomail "gopkg.in/gomail.v2"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	models "sky-meter/models"
 
 	"github.com/opsgenie/opsgenie-go-sdk-v2/alert"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
@@ -17,6 +17,8 @@ import (
 )
 
 func SendMail(i models.SmtpErr) {
+
+	log.Println(i.Mailto, "mailto")
 
 	emailPass := os.Getenv("emailpass")
 	if emailPass == "" {

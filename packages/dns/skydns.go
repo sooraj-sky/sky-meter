@@ -7,7 +7,7 @@ import (
 )
 
 // Create a custom Resolver that uses a specific DNS server IP
-func customResolver(dnsServer string) *net.Resolver {
+func CustomResolver(dnsServer string) *net.Resolver {
 	return &net.Resolver{
 		PreferGo: true,
 		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
