@@ -97,15 +97,13 @@ type SmtpErr struct {
 }
 
 type UserInput struct {
-	Opegenie []struct {
+	Opegenie struct {
 		Enabled bool
 	}
-	Email []struct {
+	Email struct {
 		Enabled bool
-		Server  string
-		Port    int
-		Sender  string
 	}
+
 	Groups []struct {
 		Name   string
 		Emails []string
@@ -125,4 +123,16 @@ type AlertGroups struct {
 	CreatedAt int64 `gorm:"autoUpdateTime"`
 	Name      string
 	Email     string
+}
+
+type AllEnvs struct {
+	DnsServer      string
+	EmailPass      string
+	EmailFrom      string
+	EmailPort      string
+	EmailServer    string
+	OpsgenieSecret string
+	SentryDsn      string
+	Mode           string
+	DbUrl          string
 }

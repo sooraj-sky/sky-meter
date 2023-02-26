@@ -2,23 +2,30 @@ package main
 
 import (
 	"github.com/jasonlvhit/gocron"
-	dbops "github.com/sooraj-sky/sky-meter/packages/dbops"
-	skymeter "github.com/sooraj-sky/sky-meter/packages/httpserver"
-	sentry "github.com/sooraj-sky/sky-meter/packages/logger"
-	yamlops "github.com/sooraj-sky/sky-meter/packages/yamlops"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"os"
+	dbops "sky-meter/packages/dbops"
+	skyenv "sky-meter/packages/env"
+	sentry "sky-meter/packages/logger"
+	yamlops "sky-meter/packages/yamlops"
 )
+
+func init() {
+
+	// Initialize the environment variables
+	skyenv.InitEnv()
+}
 
 func main() {
 	log.Println("Launching sky-meter")
+
+	// Initialize the Sentry logger
 	sentry.SentryInit()
-	dbconnect := os.Getenv("dbconnect")
-	if opsgenieSecret == "" {
-		log.Fatal("Please specify the opsgeniesecret as environment variable, e.g. sooraj@sky:~/go/src/sky-meter$ export dbconnect=host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable")
-	}
+
+	// Get all the environment variables
+	allEnv := skyenv.GetEnv()
+	dbconnect := allEnv.DbUrl
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dbconnect,
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
@@ -26,16 +33,19 @@ func main() {
 	}), &gorm.Config{})
 
 	if err != nil {
-		log.Println(err)
+
+		// Exit the program if there is an error connecting to the database
+		log.Fatal(err)
 	}
+
+	// Read the YAML file to get the list of endpoints to monitor
 	endpoints := yamlops.InputYml()
 	dbops.InitialMigration(db)
 	dbops.InsertUrlsToDb(db, endpoints)
 	dbops.RemoveOldEntry(db, endpoints)
 	log.Println("Updated sky-meter targets")
 	log.Println("Staring sky-meter Health Check")
-	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db)
-	<-gocron.Start()
-	skymeter.InitServer()
+	gocron.Every(1).Second().Do(dbops.GetUrlFrequency, db, endpoints)
+	<-gocron.Start() // Start the scheduler and block the main thread until it exits
 
 }
