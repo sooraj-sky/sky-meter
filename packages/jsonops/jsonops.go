@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	models "github.com/sooraj-sky/sky-meter/models"
+	models "sky-meter/models"
 )
 
 func InputJson() models.JsonInput {

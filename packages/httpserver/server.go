@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/gorilla/mux"
-	api "github.com/sooraj-sky/sky-meter/packages/api"
+	api "sky-meter/packages/api"
 )
 
 func InitServer() {

@@ -1,12 +1,12 @@
 package yamlops
 
 import (
-	models "github.com/sooraj-sky/sky-meter/models"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	models "sky-meter/models"
 	"strconv"
 )
 

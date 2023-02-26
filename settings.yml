@@ -5,6 +5,7 @@ email:
   server: smtp.gmail.com
   port: 587
   sender: linux.sooraj@gmail.com
+
 groups:
 - name: prod
   emails:
@@ -14,6 +15,7 @@ groups:
   emails:
      - onlyworkofficial@gmail.com
      - ops@skywalks.in
+     
 domains:
 - name: https://skywalks.in
   enabled: true

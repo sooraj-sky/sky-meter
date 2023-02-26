@@ -3,13 +3,15 @@ package httpreponser
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptrace"
+	"os"
 	"time"
 
-	models "github.com/sooraj-sky/sky-meter/models"
-	skydns "github.com/sooraj-sky/sky-meter/packages/skydns"
+	models "sky-meter/models"
+	skydns "sky-meter/packages/dns"
 )
 
 func GetHttpdata(url string, timeout time.Duration, SkipSsl bool) (httpdata []byte, httpstatuscode int, errs error) {
@@ -55,12 +57,13 @@ func tlsConfig() *tls.Config {
 }
 
 func trace() (*httptrace.ClientTrace, *models.Debug) {
+	//DNS settings
+	dnsServer := os.Getenv("dnsserver") // Replace with your desired DNS server IP address
+	resolver := skydns.CustomResolver(dnsServer)
+	fmt.Sprintln(resolver)
 	d := &models.Debug{}
 
 	t := &httptrace.ClientTrace{
-		//DNS settings
-		dnsServer := "8.8.8.8" // Replace with your desired DNS server IP address
-		skydns.resolver := customResolver(dnsServer)
 
 		DNSStart: func(info httptrace.DNSStartInfo) {
 			t := time.Now().UTC().String()

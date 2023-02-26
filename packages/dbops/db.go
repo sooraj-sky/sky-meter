@@ -2,10 +2,10 @@ package dbops
 
 import (
 	"encoding/json"
-	models "github.com/sooraj-sky/sky-meter/models"
-	skyalerts "github.com/sooraj-sky/sky-meter/packages/alerts"
-	httpreponser "github.com/sooraj-sky/sky-meter/packages/httpres"
 	"log"
+	models "sky-meter/models"
+	skyalerts "sky-meter/packages/alerts"
+	httpreponser "sky-meter/packages/httpres"
 	"time"
 
 	"gorm.io/gorm"
@@ -37,8 +37,8 @@ func InsertUrlsToDb(db *gorm.DB, endpoints models.UserInput) {
 	for i := range endpoints.Groups {
 		db.Where("NAME=?", endpoints.Groups[i].Name).Find(&Groups)
 		for k := range endpoints.Groups[i].Emails {
-			if Groups.CreatedAt == 0 && Groups.Email != endpoints.Groups[1].Emails[k] {
-				db.Create(&models.AlertGroups{Name: endpoints.Groups[i].Name, Email: endpoints.Groups[1].Emails[k]})
+			if Groups.CreatedAt == 0 && Groups.Email != endpoints.Groups[i].Emails[k] {
+				db.Create(&models.AlertGroups{Name: endpoints.Groups[i].Name, Email: endpoints.Groups[i].Emails[k]})
 			}
 		}
 
@@ -50,8 +50,8 @@ func GetUrlFrequency(db *gorm.DB) {
 	var urlsToCheck []models.AllEndpoints
 	var urlsId []models.AllEndpoints
 	var alertStatus models.OpsgenieAlertData
-	var GroupsEmailIds models.AlertGroups
-	var Empty models.AlertGroups
+	var GroupsEmailIds []models.AlertGroups
+	var Empty []models.AlertGroups
 
 	db.Find(&urlsToCheck)
 	for i := 0; i < len(urlsToCheck); i++ {
@@ -63,6 +63,12 @@ func GetUrlFrequency(db *gorm.DB) {
 				if err != nil {
 					db.First(&alertStatus, "url = ?", urlsToCheck[i].URL)
 					db.Where("Name=?", urlsToCheck[i].Group).Find(&GroupsEmailIds)
+					var emailIds []string
+					for _, group := range GroupsEmailIds {
+						emailIds = append(emailIds, group.Email)
+					}
+
+					log.Println(GroupsEmailIds, "email")
 
 					if alertStatus.URL == urlsToCheck[i].URL {
 						dt := time.Now()
@@ -70,7 +76,7 @@ func GetUrlFrequency(db *gorm.DB) {
 						if (AlertStatus == "closed") || (alertStatus.Error != err.Error()) {
 							alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
 							db.Model(&alertStatus).Where("url = ?", urlsToCheck[i].URL).Update("request_id", alertReqId)
-							d := models.SmtpErr{urlsToCheck[i].URL, "webiste is Down", dt, err.Error(), []string{GroupsEmailIds.Email}}
+							d := models.SmtpErr{urlsToCheck[i].URL, "webiste is Down", dt, err.Error(), emailIds}
 
 							skyalerts.SendMail(d)
 						}
@@ -79,7 +85,7 @@ func GetUrlFrequency(db *gorm.DB) {
 
 						dts := time.Now()
 						db.Create(&models.HttpOutput{OutputData: httpOutput, URL: urlsToCheck[i].URL, StatusCode: HttpStatusCode, Error: err.Error()})
-						d := models.SmtpErr{urlsToCheck[i].URL, "webiste is Down", dts, err.Error(), []string{GroupsEmailIds.Email}}
+						d := models.SmtpErr{urlsToCheck[i].URL, "webiste is Down", dts, err.Error(), emailIds}
 
 						alertReqId := skyalerts.OpsgenieCreateAlert(urlsToCheck[i].URL, err, urlsToCheck[i].Group)
 						db.Create(&models.OpsgenieAlertData{URL: urlsToCheck[i].URL, RequestId: alertReqId, Error: err.Error(), Active: true})

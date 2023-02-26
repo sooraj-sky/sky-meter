@@ -106,6 +106,7 @@ type UserInput struct {
 		Port    int
 		Sender  string
 	}
+
 	Groups []struct {
 		Name   string
 		Emails []string
