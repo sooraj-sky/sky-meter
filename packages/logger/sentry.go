@@ -2,27 +2,25 @@ package sentry
 
 import (
 	"log"
-	"os"
 
 	"github.com/getsentry/sentry-go"
+	skyenv "sky-meter/packages/env"
 )
 
 func SentryInit() {
-	mode := os.Getenv("mode")
+	allEnv := skyenv.GetEnv()
+	mode := allEnv.Mode
 	if mode == "dev" {
-		sentenv := os.Getenv("sentry_dsn")
-		if sentenv == "" {
-			log.Fatal("Please specify the sentry_dsn as environment variable, e.g. env sentry_dsn=https://your-dentry-dsn.com go run cmd/main.go")
-		}
-		senterr := sentry.Init(sentry.ClientOptions{
-			Dsn: sentenv,
+		sentryEnv := allEnv.SentryDsn
+		sentryerr := sentry.Init(sentry.ClientOptions{
+			Dsn: sentryEnv,
 			// Set TracesSampleRate to 1.0 to capture 100%
 			// of transactions for performance monitoring.
 			// We recommend adjusting this value in production,
 			TracesSampleRate: 1.0,
 		})
-		if senterr != nil {
-			log.Fatalf("sentry.Init: %s", senterr)
+		if sentryerr != nil {
+			log.Fatalf("sentry.Init: %s", sentryerr)
 		}
 
 	}

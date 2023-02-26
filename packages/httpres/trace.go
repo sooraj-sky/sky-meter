@@ -7,11 +7,11 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptrace"
-	"os"
 	"time"
 
 	models "sky-meter/models"
 	skydns "sky-meter/packages/dns"
+	skyenv "sky-meter/packages/env"
 )
 
 func GetHttpdata(url string, timeout time.Duration, SkipSsl bool) (httpdata []byte, httpstatuscode int, errs error) {
@@ -57,8 +57,9 @@ func tlsConfig() *tls.Config {
 }
 
 func trace() (*httptrace.ClientTrace, *models.Debug) {
+	allEnv := skyenv.GetEnv()
 	//DNS settings
-	dnsServer := os.Getenv("dnsserver") // Replace with your desired DNS server IP address
+	dnsServer := allEnv.DnsServer
 	resolver := skydns.CustomResolver(dnsServer)
 	fmt.Sprintln(resolver)
 	d := &models.Debug{}
