@@ -7,6 +7,7 @@ import (
 	skyenv "sky-meter/packages/env"
 )
 
+// The function SentryInit initializes the Sentry error tracking service.
 func SentryInit() {
 	allEnv := skyenv.GetEnv()
 	mode := allEnv.Mode

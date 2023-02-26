@@ -1,10 +1,7 @@
 opegenie:
-- enabled: false
+  enabled: false
 email:
-- enabled: true
-  server: smtp.gmail.com
-  port: 587
-  sender: linux.sooraj@gmail.com
+  enabled: true
 
 groups:
 - name: prod
@@ -35,10 +32,9 @@ domains:
   skip_ssl: false
   frequency: 60
   group: prod
-
 - name: https://githcccubs.com
   enabled: true
   timeout: 10
   skip_ssl: false
-  frequency: 60
+  frequency: 70
   group: prod

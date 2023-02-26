@@ -97,14 +97,11 @@ type SmtpErr struct {
 }
 
 type UserInput struct {
-	Opegenie []struct {
+	Opegenie struct {
 		Enabled bool
 	}
-	Email []struct {
+	Email struct {
 		Enabled bool
-		Server  string
-		Port    int
-		Sender  string
 	}
 
 	Groups []struct {
@@ -130,7 +127,6 @@ type AlertGroups struct {
 
 type AllEnvs struct {
 	DnsServer      string
-	Port           string
 	EmailPass      string
 	EmailFrom      string
 	EmailPort      string
