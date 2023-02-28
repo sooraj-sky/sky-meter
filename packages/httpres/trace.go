@@ -3,7 +3,6 @@ package httpreponser
 import (
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptrace"
@@ -69,8 +68,8 @@ func trace() (*httptrace.ClientTrace, *models.Debug) {
 	// Set up custom DNS resolver using DNS server from environment variables.
 	allEnv := skyenv.GetEnv()
 	dnsServer := allEnv.DnsServer
-	resolver := skydns.CustomResolver(dnsServer)
-	fmt.Sprintln(resolver)
+	skydns.CustomResolver(dnsServer)
+
 
 	// Create a new Debug object.
 	d := &models.Debug{}
