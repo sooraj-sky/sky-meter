@@ -2,9 +2,12 @@
 [![CodeQL](https://github.com/sooraj-sky/sky-meter/actions/workflows/codeql.yml/badge.svg)](https://github.com/sooraj-sky/sky-meter/actions/workflows/codeql.yml)
 [![Dependency Review](https://github.com/sooraj-sky/sky-meter/actions/workflows/dependency-review.yml/badge.svg?branch=main)](https://github.com/sooraj-sky/sky-meter/actions/workflows/dependency-review.yml)
 
-Sky-meter is a synthetic endpoint checker. You can deploy this on your infra and run checks from your infa and set alerts. Here we are using the go httptrace library.  
-Currenly we have addded Database support. The endpoints and http output are now being saved in Database. We also have a sentry integration to catch the runtime errors.
- Development is in progress
+Sky-meter is a tool or application that allows you to perform synthetic endpoint checks. It is designed to be deployed on your infrastructure, meaning you can set it up on your own servers or machines. Once deployed, you can use Sky-meter to run checks on different endpoints, which could be URLs, APIs, or any other endpoints that you want to monitor.
+
+Sky-meter is built using the Go programming language and utilizes the httptrace library to perform checks on the endpoints. This allows Sky-meter to measure various metrics like response time, status codes, and headers.
+
+In summary, Sky-meter is a synthetic endpoint checker that you can deploy on your infrastructure. It allows you to run checks on different endpoints, set alerts, and measure various metrics. With the recent addition of database support and Sentry integration, Sky-meter is becoming a more powerful tool for monitoring and tracking the health of your endpoints.
+
  ### [Visit Our Website](https://sky-meter.skywalks.in)   
 ### [Visit pkg.go.dev](https://pkg.go.dev/github.com/sooraj-sky/sky-meter)
 
@@ -126,10 +129,11 @@ $ go run cmd/main.go
 
 ## CI
 
-we are using concourse CI for  Main Branch
-
+we are using concourse CI for  Main Branch.
 For release branch we have Github Actions
 
+## Usage
+Once the program is running, it will read a YAML file to get the list of endpoints to monitor, and insert them into the database. It will then start checking the endpoints at the frequency specified in the YAML file. Any runtime errors will be caught and logged using Sentry.
 
-
-
+## Contributions
+Contributions are welcome! If you find a bug or have a suggestion for a new feature, please open an issue or submit a pull request.
