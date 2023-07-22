@@ -26,6 +26,7 @@ CMD [ "/server" ]
 FROM alpine
 
 COPY --from=builder /main .
+COPY --from=builder /go/src/app/template .
 ARG USER=skyuser
 ENV HOME /home/$USER
 
