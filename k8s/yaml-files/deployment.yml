@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: skymeter
-          image: soorajsky/sky-meter:release-0b314b4
+          image: soorajsky/sky-meter:release-ba9f77d
           envFrom:
             - configMapRef:
                 name: skymeter-env  # Replace with your ConfigMap name
