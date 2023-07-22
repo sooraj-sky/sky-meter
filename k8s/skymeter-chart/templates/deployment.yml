@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skymeter-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skymeter
+  template:
+    metadata:
+      labels:
+        app: skymeter
+    spec:
+      containers:
+        - name: skymeter
+          image: soorajsky/sky-meter:release-ba9f77d
+          envFrom:
+            - configMapRef:
+                name: skymeter-env  # Replace with your ConfigMap name
+          volumeMounts:
+            - name: settings-volume
+              mountPath: /home/skyuser/settings.yml # Replace with the desired path inside the container
+              subPath: settings.yml
+      volumes:
+        - name: settings-volume
+          configMap:
+            name: skymeter-settings  # Replace with your ConfigMap name
+            items:
+              - key: settings.yml
+                path: settings.yml
+
