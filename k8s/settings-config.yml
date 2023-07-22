@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config-map-name  # Replace with your desired ConfigMap name
+  name: skymeter-settings  # Replace with your desired ConfigMap name
 data:
   settings.yml: |
     opegenie:

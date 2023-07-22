@@ -4,10 +4,12 @@ metadata:
   name: skymeter-env  # Replace with your desired ConfigMap name
 data:
   DnsServer: "8.8.8.8"
-  DbUrl: "host=localhost user=postgres password=postgres dbname=postgres port=5433 sslmode=disable"
+  DbUrl: "host=192.168.0.7 user=postgres password=postgres dbname=postgres port=5433 sslmode=disable"
   EmailPass: "your-pass-here"
   EmailFrom: "youremail@server.com"
   EmailPort: "587"
   EmailServer: "smtp.server-address-here.com"
   OpsgenieSecret: "your-opsgenie-key-here"
+  Mode: "prod"
+  SentryDsn: "test"
 
