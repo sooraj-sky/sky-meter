@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/getsentry/sentry-go v0.14.0
-	github.com/gorilla/mux v1.8.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
@@ -31,9 +30,9 @@ require (
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
-	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
-	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
-	golang.org/x/text v0.3.8 // indirect
+	golang.org/x/crypto v0.17.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gorm.io/driver/mysql v1.3.2 // indirect
 )
