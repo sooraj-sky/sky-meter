@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/getsentry/sentry-go v0.14.0
-	github.com/gorilla/mux v1.8.0
 	github.com/jasonlvhit/gocron v0.0.1
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
@@ -22,7 +21,7 @@ require (
 	github.com/jackc/pgconn v1.13.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
-	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
+	github.com/jackc/pgproto3/v2 v2.3.3 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.12.0 // indirect
 	github.com/jackc/pgx/v4 v4.17.2 // indirect
